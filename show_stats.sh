@@ -24,7 +24,8 @@ get_cpu_power() {
             if [[ $diff_time -gt 0 && $diff_energy -ge 0 ]]; then
                 # energy in uJ, time in ns -> watts = (uJ * 1000) / ns
                 local watts=$(echo "scale=1; $diff_energy * 1000 / $diff_time" | bc 2>/dev/null)
-                [[ -n "$watts" ]] && echo "${watts} W" || echo "?"
+                # Ensure leading zero for values < 1
+                [[ -n "$watts" ]] && printf "%.1f W\n" "$watts" || echo "?"
             else
                 echo "?"
             fi
@@ -47,10 +48,11 @@ get_laptop_power() {
     if [[ $current -gt 0 ]]; then
         # voltage in uV, current in uA -> watts = (uV * uA) / 10^12
         watts=$(echo "scale=1; $voltage * $current / 1000000000000" | bc 2>/dev/null)
+        # Ensure leading zero for values < 1
         if [[ "$status" == "Charging" ]]; then
-            echo "+${watts} W"
+            printf "+%.1f W\n" "$watts"
         else
-            echo "${watts} W"
+            printf "%.1f W\n" "$watts"
         fi
     else
         echo "AC"
