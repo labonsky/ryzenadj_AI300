@@ -44,7 +44,22 @@ See `ryzen_smu/KRACKAN_POINT.md` for patch details.
 
 ## Installation
 
-### Quick Start
+### RPM Package (Fedora - Recommended)
+
+Download from [GitHub Releases](https://github.com/labonsky/ryzenadj_AI300/releases):
+
+```bash
+# Install RPM
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.0-1.fc43.x86_64.rpm
+
+# Verify
+sudo ryzenadj -i
+tuned-adm list | grep ryzenadj
+```
+
+The RPM includes everything: ryzenadj binary, ryzen_smu DKMS module, tuned profiles, and auto-switching.
+
+### Build from Source
 
 ```bash
 # Clone
@@ -115,6 +130,8 @@ ryzenadj/
 │   ├── ryzenadj-battery/
 │   ├── ryzenadj-balanced/
 │   └── ryzenadj-ac/
+├── rpm/                   # RPM packaging
+│   └── ryzenadj-ryzen_smu-ai300-krackan-PP.spec
 ├── power_feeder.py        # Widget power monitoring
 ├── show_watts.sh          # KDE widget helper
 ├── show_laptop_watts.sh   # KDE widget helper
