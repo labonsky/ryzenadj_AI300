@@ -29,6 +29,13 @@ cp "$SCRIPT_DIR/99-ryzenadj-power.rules" /etc/udev/rules.d/
 # Install ppd.conf for KDE power profiles integration
 cp "$SCRIPT_DIR/ppd.conf" /etc/tuned/
 
+# Install boot-time profile check
+cp "$SCRIPT_DIR/ryzenadj-boot-check.sh" /usr/local/bin/
+chmod +x /usr/local/bin/ryzenadj-boot-check.sh
+cp "$SCRIPT_DIR/ryzenadj-boot-check.service" /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable ryzenadj-boot-check.service
+
 # Reload services
 udevadm control --reload-rules
 systemctl restart tuned

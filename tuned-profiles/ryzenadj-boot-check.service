@@ -1,0 +1,12 @@
+[Unit]
+Description=Apply correct ryzenadj tuned profile at boot
+After=tuned.service
+Requires=tuned.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ryzenadj-boot-check.sh
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

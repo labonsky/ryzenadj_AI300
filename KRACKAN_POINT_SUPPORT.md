@@ -95,6 +95,11 @@ sudo tuned-adm profile ryzenadj-ac       # Full power
 tuned-adm active                          # Check current
 ```
 
+### Auto-Switching
+
+- **On plug/unplug:** udev rules detect AC state changes
+- **On boot:** systemd service checks AC state and applies correct profile
+
 ## File Structure
 
 ```
@@ -105,6 +110,8 @@ ryzenadj/
 │   ├── install.sh
 │   ├── ppd.conf           # KDE power profiles mapping
 │   ├── 99-ryzenadj-power.rules
+│   ├── ryzenadj-boot-check.sh      # Boot-time profile check
+│   ├── ryzenadj-boot-check.service # Systemd service
 │   ├── ryzenadj-battery/
 │   ├── ryzenadj-balanced/
 │   └── ryzenadj-ac/
