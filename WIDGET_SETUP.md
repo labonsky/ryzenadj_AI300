@@ -38,7 +38,7 @@ Add a "Command Output" widget to the KDE Panel:
 - **Command:** `/home/labonsky/Projects/ryzenadj/show_stats.sh`
 - **Interval:** 1000 ms
 
-**Output format:** `CPU | Laptop | Temp` (e.g., `3.5 W | 7.2 W | 37°C`)
+**Output format:** `Laptop | CPU | Temp` (e.g., `7.2 W | 3.5 W | 37°C`)
 
 ## 3. Power Profile Switching
 
