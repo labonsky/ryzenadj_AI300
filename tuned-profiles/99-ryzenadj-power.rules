@@ -1,0 +1,5 @@
+# Switch to battery profile when unplugged
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="0", RUN+="/usr/sbin/tuned-adm profile ryzenadj-battery"
+
+# Switch to AC profile when plugged in
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="1", RUN+="/usr/sbin/tuned-adm profile ryzenadj-ac"

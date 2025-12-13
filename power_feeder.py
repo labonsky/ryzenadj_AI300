@@ -14,8 +14,8 @@ OUTPUT_PATH_BAT = "/home/labonsky/laptop_watts"
 
 # Power Commands
 RYZENADJ_BIN = "/usr/local/bin/ryzenadj"
-CMD_LOW_POWER  = [RYZENADJ_BIN, "--stapm-limit=5000", "--fast-limit=7000", "--slow-limit=5000"]
-CMD_HIGH_POWER = [RYZENADJ_BIN, "--stapm-limit=51000", "--fast-limit=51000", "--slow-limit=33000"]
+CMD_LOW_POWER  = [RYZENADJ_BIN, "--stapm-limit=5000", "--fast-limit=10000", "--slow-limit=5000"]
+CMD_HIGH_POWER = [RYZENADJ_BIN, "--stapm-limit=53000", "--fast-limit=53000", "--slow-limit=35000"]
 
 # Screen Commands (Run as user 'labonsky')
 # Mode 2 = 60Hz, Mode 1 = 120Hz (based on kscreen-doctor output)

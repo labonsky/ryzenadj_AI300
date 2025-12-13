@@ -155,43 +155,134 @@ sudo mokutil --import /var/lib/dkms/mok.pub
 
 ---
 
-## Power Automation (Optional)
+## Power Automation (Fedora/tuned Integration)
 
-This fork includes a power management service that automatically adjusts power limits based on AC/battery status.
-
-### Setup
-
-```bash
-# Copy service file (adjust paths as needed)
-sudo cp power_feeder.py /opt/ryzenadj/
-sudo tee /etc/systemd/system/ryzenadj-feeder.service << 'EOF'
-[Unit]
-Description=RyzenAdj Power Feeder
-After=multi-user.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/python3 /opt/ryzenadj/power_feeder.py
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Enable and start
-sudo systemctl daemon-reload
-sudo systemctl enable --now ryzenadj-feeder.service
-```
+This fork includes tuned profiles that integrate with Fedora's power management, automatically adjusting power limits based on AC/battery status.
 
 ### Power Profiles
 
-| Mode | STAPM | Fast | Slow | Refresh |
-|------|-------|------|------|---------|
-| Battery | 5W | 7W | 5W | 60Hz |
-| AC | 51W | 51W | 33W | 120Hz |
+| Profile | Inherits | STAPM | Fast | Slow | Screen |
+|---------|----------|-------|------|------|--------|
+| `ryzenadj-battery` | powersave | 5W | 10W | 5W | 60Hz |
+| `ryzenadj-ac` | balanced | 53W | 53W | 35W | 120Hz |
 
-See [WIDGET_SETUP.md](WIDGET_SETUP.md) for KDE widget integration.
+### Power Limit Explanation
+
+| Limit | Description |
+|-------|-------------|
+| **PPT FAST** | Maximum burst power (milliseconds) - instant responsiveness |
+| **PPT SLOW** | Average power over seconds - short-term workloads |
+| **STAPM** | Sustained thermal power (minutes) - long-term heat management |
+
+### Setup (Fedora with tuned)
+
+```bash
+# Create profile directories
+sudo mkdir -p /etc/tuned/profiles/ryzenadj-battery
+sudo mkdir -p /etc/tuned/profiles/ryzenadj-ac
+
+# Battery profile (inherits Fedora's powersave settings)
+sudo tee /etc/tuned/profiles/ryzenadj-battery/tuned.conf << 'EOF'
+[main]
+summary=Battery power saving with ryzenadj (5W sustain, 10W burst)
+include=powersave
+
+[script]
+script=${i:PROFILE_DIR}/script.sh
+EOF
+
+sudo tee /etc/tuned/profiles/ryzenadj-battery/script.sh << 'EOF'
+#!/bin/bash
+case "$1" in
+    start)
+        /usr/local/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000 2>/dev/null
+        # Adjust username and display settings as needed
+        sudo -u $USER XDG_RUNTIME_DIR=/run/user/$(id -u $USER) WAYLAND_DISPLAY=wayland-0 kscreen-doctor output.eDP-1.mode.2 2>/dev/null
+        ;;
+esac
+exit 0
+EOF
+sudo chmod +x /etc/tuned/profiles/ryzenadj-battery/script.sh
+
+# AC profile (inherits Fedora's balanced settings)
+sudo tee /etc/tuned/profiles/ryzenadj-ac/tuned.conf << 'EOF'
+[main]
+summary=AC full power with ryzenadj (53W defaults)
+include=balanced
+
+[cpu]
+boost=1
+
+[script]
+script=${i:PROFILE_DIR}/script.sh
+EOF
+
+sudo tee /etc/tuned/profiles/ryzenadj-ac/script.sh << 'EOF'
+#!/bin/bash
+case "$1" in
+    start)
+        /usr/local/bin/ryzenadj --stapm-limit=53000 --fast-limit=53000 --slow-limit=35000 2>/dev/null
+        # Adjust username and display settings as needed
+        sudo -u $USER XDG_RUNTIME_DIR=/run/user/$(id -u $USER) WAYLAND_DISPLAY=wayland-0 kscreen-doctor output.eDP-1.mode.1 2>/dev/null
+        ;;
+esac
+exit 0
+EOF
+sudo chmod +x /etc/tuned/profiles/ryzenadj-ac/script.sh
+
+# Verify profiles are available
+tuned-adm list | grep ryzenadj
+```
+
+### Auto-Switching (udev)
+
+Create udev rules to automatically switch profiles on plug/unplug:
+
+```bash
+sudo tee /etc/udev/rules.d/99-ryzenadj-power.rules << 'EOF'
+# Switch to battery profile when unplugged
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="0", RUN+="/usr/sbin/tuned-adm profile ryzenadj-battery"
+
+# Switch to AC profile when plugged in
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="1", RUN+="/usr/sbin/tuned-adm profile ryzenadj-ac"
+EOF
+
+sudo udevadm control --reload-rules
+```
+
+### Manual Profile Switching
+
+```bash
+# Switch to battery mode
+sudo tuned-adm profile ryzenadj-battery
+
+# Switch to AC mode
+sudo tuned-adm profile ryzenadj-ac
+
+# Check current profile
+tuned-adm active
+
+# Verify power limits
+sudo ryzenadj -i
+```
+
+### Fedora Powersave Features (Inherited)
+
+The `ryzenadj-battery` profile inherits these additional power savings from Fedora's powersave profile:
+
+| Setting | Effect |
+|---------|--------|
+| `governor=powersave` | CPU frequency scaling |
+| `boost=0` | Disables turbo boost |
+| `platform_profile=low-power` | ACPI power mode |
+| `panel_power_savings=3` | Display power saving |
+| `vm.laptop_mode=5` | Aggressive disk caching |
+| `radeon_powersave=dpm-battery` | GPU power saving |
+| `alpm=med_power_with_dipm` | SATA link power management |
+
+### Legacy: Standalone Power Feeder (Alternative)
+
+For non-Fedora systems or if you prefer a standalone service, see `power_feeder.py` in this repository.
 
 ---
 
