@@ -5,7 +5,7 @@ Requires=tuned.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/ryzenadj-boot-check.sh
+ExecStart=/usr/bin/ryzenadj-boot-check.sh
 RemainAfterExit=no
 
 [Install]

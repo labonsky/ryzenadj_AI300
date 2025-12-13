@@ -195,9 +195,9 @@ sudo tee /etc/tuned/profiles/ryzenadj-battery/script.sh << 'EOF'
 #!/bin/bash
 case "$1" in
     start)
-        /usr/local/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000 2>/dev/null
-        # Adjust username and display settings as needed
-        sudo -u $USER XDG_RUNTIME_DIR=/run/user/$(id -u $USER) WAYLAND_DISPLAY=wayland-0 kscreen-doctor output.eDP-1.mode.2 2>/dev/null
+        /usr/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000 2>/dev/null
+        # Screen refresh (optional) - adjust for your setup
+        # kscreen-doctor output.eDP-1.mode.2 2>/dev/null
         ;;
 esac
 exit 0
@@ -218,9 +218,9 @@ sudo tee /etc/tuned/profiles/ryzenadj-ac/script.sh << 'EOF'
 #!/bin/bash
 case "$1" in
     start)
-        /usr/local/bin/ryzenadj --stapm-limit=53000 --fast-limit=53000 --slow-limit=35000 2>/dev/null
-        # Adjust username and display settings as needed
-        sudo -u $USER XDG_RUNTIME_DIR=/run/user/$(id -u $USER) WAYLAND_DISPLAY=wayland-0 kscreen-doctor output.eDP-1.mode.1 2>/dev/null
+        /usr/bin/ryzenadj --stapm-limit=53000 --fast-limit=53000 --slow-limit=35000 2>/dev/null
+        # Screen refresh (optional) - adjust for your setup
+        # kscreen-doctor output.eDP-1.mode.1 2>/dev/null
         ;;
 esac
 exit 0

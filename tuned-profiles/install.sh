@@ -31,8 +31,8 @@ cp "$SCRIPT_DIR/99-ryzenadj-rapl.rules" /etc/udev/rules.d/
 cp "$SCRIPT_DIR/ppd.conf" /etc/tuned/
 
 # Install boot-time profile check
-cp "$SCRIPT_DIR/ryzenadj-boot-check.sh" /usr/local/bin/
-chmod +x /usr/local/bin/ryzenadj-boot-check.sh
+cp "$SCRIPT_DIR/ryzenadj-boot-check.sh" /usr/bin/
+chmod +x /usr/bin/ryzenadj-boot-check.sh
 cp "$SCRIPT_DIR/ryzenadj-boot-check.service" /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable ryzenadj-boot-check.service
