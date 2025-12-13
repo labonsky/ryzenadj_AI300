@@ -45,10 +45,14 @@ get_laptop_power() {
     current=$(cat /sys/class/power_supply/BAT1/current_now 2>/dev/null) || { echo "?"; return; }
     status=$(cat /sys/class/power_supply/BAT1/status 2>/dev/null)
 
+    # Handle negative current (some systems report it that way)
+    [[ $current -lt 0 ]] && current=$((-current))
+
     if [[ $current -gt 0 ]]; then
         # voltage in uV, current in uA -> watts = (uV * uA) / 10^12
         watts=$(echo "scale=1; $voltage * $current / 1000000000000" | bc 2>/dev/null)
-        # Ensure leading zero for values < 1
+        # Ensure leading zero for values < 1 and positive result
+        [[ "${watts:0:1}" == "-" ]] && watts="${watts:1}"
         if [[ "$status" == "Charging" ]]; then
             printf "+%.1f W\n" "$watts"
         else
