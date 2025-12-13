@@ -20,10 +20,12 @@ This fork of [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) includes fu
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| **RyzenAdj** | Working | PM table size fix applied |
-| **ryzen_smu** | Patched | Full Krackan Point support |
-| **tuned profiles** | Working | Auto-switching via udev |
-| **KDE integration** | Working | Power profiles + widgets |
+| **RyzenAdj** | ✓ Working | PM table size fix applied |
+| **ryzen_smu** | ✓ Patched | Full Krackan Point support |
+| **tuned profiles** | ✓ Working | Auto-switching via udev |
+| **KDE integration** | ✓ Working | Power profiles + widgets |
+| **Boot detection** | ✓ Working | Systemd service applies correct profile |
+| **Screen refresh** | ✓ Working | 120Hz on AC, 60Hz on battery |
 
 ## Changes from Upstream
 
@@ -50,7 +52,7 @@ Download from [GitHub Releases](https://github.com/labonsky/ryzenadj_AI300/relea
 
 ```bash
 # Install RPM
-sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.6-1.fc43.x86_64.rpm
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.7-1.fc43.x86_64.rpm
 
 # Install KDE widget
 /usr/share/ryzenadj/install-widget.sh
@@ -117,9 +119,19 @@ tuned-adm active                          # Check current
 
 ### Auto-Switching
 
-- **On plug/unplug:** udev rules detect AC state changes
-- **On boot:** systemd service checks AC state and applies correct profile
-- **Screen refresh:** Automatically sets 60Hz (battery) or 120Hz (AC) via kscreen-doctor
+Fully automatic power management:
+
+| Event | Profile | Power Limits | Screen |
+|-------|---------|--------------|--------|
+| **Plug in AC** | ryzenadj-ac | 53W / 35W | 120Hz |
+| **Unplug** | ryzenadj-battery | 10W / 5W | 60Hz |
+| **Boot on AC** | ryzenadj-ac | 53W / 35W | 120Hz |
+| **Boot on battery** | ryzenadj-battery | 10W / 5W | 60Hz |
+
+How it works:
+- **udev rules:** Detect AC plug/unplug events and switch profiles
+- **Boot service:** Systemd oneshot service checks AC state at boot
+- **Profile scripts:** Apply ryzenadj power limits + kscreen-doctor refresh rate
 
 ## File Structure
 
