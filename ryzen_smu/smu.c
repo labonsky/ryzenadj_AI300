@@ -1256,6 +1256,7 @@ enum smu_return_val smu_read_pm_table(struct pci_dev *dev, unsigned char *dst,
         g_smu.codename == CODENAME_CHAGALL ||
         g_smu.codename == CODENAME_MILAN ||
         g_smu.codename == CODENAME_HAWKPOINT ||
+        g_smu.codename == CODENAME_KRACKANPOINT ||
         g_smu.codename == CODENAME_STORMPEAK) {
       ret = smu_get_pm_table_version(dev, &version);
 
