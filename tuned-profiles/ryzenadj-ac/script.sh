@@ -1,6 +1,8 @@
 #!/bin/bash
 case "$1" in
     start)
+        # Delay to let base profile settings apply first
+        sleep 1
         /usr/bin/ryzenadj --stapm-limit=53000 --fast-limit=53000 --slow-limit=35000 2>/dev/null
         # Set 120Hz for AC - find logged-in graphical user
         for session in $(loginctl list-sessions --no-legend | awk '{print $1}'); do

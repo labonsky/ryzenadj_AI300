@@ -1,5 +1,5 @@
 # Switch to battery profile when unplugged
-ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="0", RUN+="/usr/sbin/tuned-adm profile ryzenadj-battery"
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="0", RUN+="/usr/sbin/tuned-adm profile ryzenadj-battery", RUN+="/usr/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000"
 
 # Switch to AC profile when plugged in
-ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="1", RUN+="/usr/sbin/tuned-adm profile ryzenadj-ac"
+ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="1", RUN+="/usr/sbin/tuned-adm profile ryzenadj-ac", RUN+="/usr/bin/ryzenadj --stapm-limit=53000 --fast-limit=53000 --slow-limit=35000"
