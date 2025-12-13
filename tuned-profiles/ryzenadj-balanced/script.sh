@@ -1,8 +1,17 @@
 #!/bin/bash
 case "$1" in
     start)
-        /usr/local/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000 2>/dev/null
-        sudo -u labonsky XDG_RUNTIME_DIR=/run/user/1000 WAYLAND_DISPLAY=wayland-0 kscreen-doctor output.eDP-1.mode.2 2>/dev/null
+        /usr/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000 2>/dev/null
+        # Set 60Hz for balanced - find logged-in graphical user
+        for session in $(loginctl list-sessions --no-legend | awk '{print $1}'); do
+            user=$(loginctl show-session "$session" -p Name --value 2>/dev/null)
+            type=$(loginctl show-session "$session" -p Type --value 2>/dev/null)
+            uid=$(id -u "$user" 2>/dev/null)
+            if [ "$type" = "wayland" ] && [ -n "$uid" ]; then
+                sudo -u "$user" XDG_RUNTIME_DIR="/run/user/$uid" WAYLAND_DISPLAY=wayland-0 kscreen-doctor output.eDP-1.mode.2 2>/dev/null
+                break
+            fi
+        done
         ;;
 esac
 exit 0
