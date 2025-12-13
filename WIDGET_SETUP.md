@@ -15,21 +15,15 @@ Power management is handled by **tuned** (see `tuned-profiles/`).
 
 ---
 
-## 1. Power Monitoring Service
+## 1. Power Monitoring
 
-The `power_feeder.py` script runs as root and writes power data to user-readable files:
+The `show_stats.sh` script reads directly from sysfs (no daemon needed):
 
-- `~/ryzenadj_watts` - CPU power consumption
-- `~/laptop_watts` - Total laptop power (battery discharge)
-- `~/cpu_temp` - CPU temperature (Tctl)
+- **CPU Power:** From RAPL energy counters (delta calculation)
+- **Laptop Power:** From battery voltage × current
+- **CPU Temp:** From k10temp hwmon
 
-### Service Management
-
-```bash
-sudo systemctl status ryzenadj-feeder.service
-sudo systemctl restart ryzenadj-feeder.service
-sudo journalctl -u ryzenadj-feeder.service -f
-```
+The `99-ryzenadj-rapl.rules` udev rule makes RAPL readable without root.
 
 ## 2. KDE Plasma Widget
 
@@ -79,8 +73,8 @@ See `tuned-profiles/install.sh` for installation.
 
 - `ryzenadj` (RPM: `/usr/bin/`, source: `/usr/local/bin/`)
 - `tuned` (Fedora default)
-- `python3`
+- `bc` (for calculations in show_stats.sh)
 
 ## Version
 
-Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.1+
+Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.2+

@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.1
+Version:        0.19.2
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -14,16 +14,17 @@ BuildRequires:  dkms
 
 Requires:       dkms
 Requires:       tuned
-Requires:       python3
+Requires:       bc
 
 %description
 Complete power management suite for AMD Ryzen AI 300 series (Krackan Point)
 processors including Ryzen AI 5 340 and AI 7 350.
 
 Components:
-- ryzenadj: Command-line power adjustment tool (v0.19.1)
+- ryzenadj: Command-line power adjustment tool (v0.19.2)
 - ryzen_smu: Kernel module for SMU communication (v0.1.7, DKMS)
 - Power Profiles: tuned integration with auto-switching
+- KDE widget: Power monitoring (Laptop | CPU | Temp)
 
 Power Profiles:
 - ryzenadj-battery: 5W sustained, 10W burst, 60Hz screen
@@ -62,13 +63,13 @@ cp -a tuned-profiles/ryzenadj-ac/* %{buildroot}%{_sysconfdir}/tuned/profiles/ryz
 
 # udev rules
 install -D -m 644 tuned-profiles/99-ryzenadj-power.rules %{buildroot}%{_udevrulesdir}/99-ryzenadj-power.rules
+install -D -m 644 tuned-profiles/99-ryzenadj-rapl.rules %{buildroot}%{_udevrulesdir}/99-ryzenadj-rapl.rules
 
 # boot check service
 install -D -m 755 tuned-profiles/ryzenadj-boot-check.sh %{buildroot}%{_bindir}/ryzenadj-boot-check.sh
 install -D -m 644 tuned-profiles/ryzenadj-boot-check.service %{buildroot}%{_unitdir}/ryzenadj-boot-check.service
 
-# power feeder service and widget script
-install -D -m 755 power_feeder.py %{buildroot}%{_libexecdir}/ryzenadj/power_feeder.py
+# widget script
 install -D -m 755 show_stats.sh %{buildroot}%{_libexecdir}/ryzenadj/show_stats.sh
 
 # KDE widget
@@ -130,6 +131,7 @@ fi
 %config(noreplace) %{_sysconfdir}/tuned/profiles/ryzenadj-balanced/
 %config(noreplace) %{_sysconfdir}/tuned/profiles/ryzenadj-ac/
 %{_udevrulesdir}/99-ryzenadj-power.rules
+%{_udevrulesdir}/99-ryzenadj-rapl.rules
 
 # services
 %{_bindir}/ryzenadj-boot-check.sh
@@ -137,7 +139,6 @@ fi
 
 # widget helpers
 %dir %{_libexecdir}/ryzenadj
-%{_libexecdir}/ryzenadj/power_feeder.py
 %{_libexecdir}/ryzenadj/show_stats.sh
 
 # KDE widget
@@ -146,6 +147,11 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Sat Dec 13 2025 labonsky - 0.19.2-1
+- Remove power_feeder.py daemon - direct sysfs reads now
+- Add 99-ryzenadj-rapl.rules for RAPL permissions
+- show_stats.sh now reads directly from sysfs (no daemon needed)
+
 * Sat Dec 13 2025 labonsky - 0.19.1-1
 - Add KDE Command Output widget with install script
 - Fix ppd.conf conflict with tuned-ppd package

@@ -23,8 +23,9 @@ chmod +x /etc/tuned/profiles/ryzenadj-battery/script.sh
 chmod +x /etc/tuned/profiles/ryzenadj-balanced/script.sh
 chmod +x /etc/tuned/profiles/ryzenadj-ac/script.sh
 
-# Install udev rules for auto-switching
+# Install udev rules for auto-switching and RAPL permissions
 cp "$SCRIPT_DIR/99-ryzenadj-power.rules" /etc/udev/rules.d/
+cp "$SCRIPT_DIR/99-ryzenadj-rapl.rules" /etc/udev/rules.d/
 
 # Install ppd.conf for KDE power profiles integration
 cp "$SCRIPT_DIR/ppd.conf" /etc/tuned/

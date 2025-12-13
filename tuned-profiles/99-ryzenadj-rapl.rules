@@ -1,0 +1,2 @@
+# RyzenAdj: Make RAPL energy counters readable for power monitoring widgets
+SUBSYSTEM=="powercap", KERNEL=="intel-rapl:0", RUN+="/bin/chmod 0444 /sys/class/powercap/intel-rapl:0/energy_uj"
