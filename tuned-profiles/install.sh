@@ -15,18 +15,24 @@ echo "Installing ryzenadj tuned profiles..."
 
 # Copy profiles
 cp -r "$SCRIPT_DIR/ryzenadj-battery" /etc/tuned/profiles/
+cp -r "$SCRIPT_DIR/ryzenadj-balanced" /etc/tuned/profiles/
 cp -r "$SCRIPT_DIR/ryzenadj-ac" /etc/tuned/profiles/
 
 # Make scripts executable
 chmod +x /etc/tuned/profiles/ryzenadj-battery/script.sh
+chmod +x /etc/tuned/profiles/ryzenadj-balanced/script.sh
 chmod +x /etc/tuned/profiles/ryzenadj-ac/script.sh
 
-# Install udev rules
+# Install udev rules for auto-switching
 cp "$SCRIPT_DIR/99-ryzenadj-power.rules" /etc/udev/rules.d/
 
-# Reload
+# Install ppd.conf for KDE power profiles integration
+cp "$SCRIPT_DIR/ppd.conf" /etc/tuned/
+
+# Reload services
 udevadm control --reload-rules
 systemctl restart tuned
+systemctl restart tuned-ppd 2>/dev/null || true
 
 echo ""
 echo "Installation complete!"
@@ -34,7 +40,9 @@ echo ""
 echo "Available profiles:"
 tuned-adm list | grep ryzenadj
 echo ""
-echo "To activate battery profile: sudo tuned-adm profile ryzenadj-battery"
-echo "To activate AC profile:      sudo tuned-adm profile ryzenadj-ac"
+echo "Usage:"
+echo "  sudo tuned-adm profile ryzenadj-battery  # Low power (5W)"
+echo "  sudo tuned-adm profile ryzenadj-ac       # Full power (53W)"
 echo ""
-echo "Auto-switching is enabled via udev rules."
+echo "Auto-switching enabled via udev rules."
+echo "KDE Power Profiles GUI also works."

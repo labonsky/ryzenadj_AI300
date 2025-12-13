@@ -1,71 +1,66 @@
-# RyzenAdj Power Monitor & Auto-Limiter for KDE Plasma
+# RyzenAdj Power Monitor for KDE Plasma
 
 This solution provides:
-1.  **Dual Power Monitoring:** Displays live wattage for CPU/APU and the entire laptop battery.
-2.  **Auto-Power Management:** Automatically switches power limits and screen refresh rates when unplugged/plugged.
-3.  **Security Bypass:** Runs as a systemd service to handle root-level hardware access while displaying safe data to the user.
+1. **Power Monitoring:** Displays live wattage for CPU and total laptop power
+2. **Auto-Power Management:** Via tuned profiles with udev auto-switching
 
-## Features
-*   **On Battery:** 
-    *   CPU Limit: 3W (Silent/Cool)
-    *   Refresh Rate: 60Hz
-*   **Plugged In:** 
-    *   CPU Limit: 33W (Performance)
-    *   Refresh Rate: 120Hz
-*   **Persistence:** Runs automatically at boot.
+## Power Profiles
+
+| Profile | STAPM | Fast | Slow | Screen |
+|---------|-------|------|------|--------|
+| Battery | 5W | 10W | 5W | 60Hz |
+| AC | 53W | 53W | 35W | 120Hz |
+
+Power management is handled by **tuned** (see `tuned-profiles/`).
 
 ---
 
-## 1. The Backend Script (`power_feeder.py`)
+## 1. Power Monitoring Service
 
-Located at: `/home/labonsky/Projects/ryzenadj/power_feeder.py`
+The `power_feeder.py` script runs as root and writes power data to user-readable files:
 
-This script runs as **root**. It monitors:
-*   `/sys/class/powercap/...` (CPU Power)
-*   `/sys/class/power_supply/BAT1/...` (Battery Status)
+- `~/ryzenadj_watts` - CPU power consumption
+- `~/laptop_watts` - Total laptop power (battery discharge)
 
-It writes safe output files for the widgets:
-*   `~/ryzenadj_watts` (CPU Power)
-*   `~/laptop_watts` (Total Power)
+### Service Management
 
-And executes system commands:
-*   `ryzenadj` (Power Limits)
-*   `kscreen-doctor` (Refresh Rate - executed as user `labonsky`)
-
-## 2. The System Service
-
-Located at: `/etc/systemd/system/ryzenadj-feeder.service`
-
-Ensures the backend script runs at startup.
-
-### Management Commands:
 ```bash
 sudo systemctl status ryzenadj-feeder.service
 sudo systemctl restart ryzenadj-feeder.service
-sudo journalctl -u ryzenadj-feeder.service -f  # View logs
+sudo journalctl -u ryzenadj-feeder.service -f
 ```
 
-## 3. The Frontend Widgets (KDE Plasma)
+## 2. KDE Plasma Widgets
 
-We use two "Command Output" widgets on the KDE Panel.
+Use two "Command Output" widgets on the KDE Panel:
 
 ### Widget 1: CPU Power
-*   **Command:** `/home/labonsky/Projects/ryzenadj/show_watts.sh`
-*   **Interval:** 1000 ms
+- **Command:** `/home/labonsky/Projects/ryzenadj/show_watts.sh`
+- **Interval:** 1000 ms
 
 ### Widget 2: Total Laptop Power
-*   **Command:** `/home/labonsky/Projects/ryzenadj/show_laptop_watts.sh`
-*   **Interval:** 1000 ms
+- **Command:** `/home/labonsky/Projects/ryzenadj/show_laptop_watts.sh`
+- **Interval:** 1000 ms
 
----
+## 3. Power Profile Switching
 
-## Wrapper Scripts
-These helper scripts prevent errors if the data files are missing during boot.
+Power profiles are managed by **tuned** with automatic switching via udev:
 
-*   `/home/labonsky/Projects/ryzenadj/show_watts.sh`
-*   `/home/labonsky/Projects/ryzenadj/show_laptop_watts.sh`
+```bash
+# Check current profile
+tuned-adm active
+
+# Manual switching
+sudo tuned-adm profile ryzenadj-battery
+sudo tuned-adm profile ryzenadj-ac
+
+# KDE GUI also works (Power Saver / Balanced / Performance)
+```
+
+See `tuned-profiles/install.sh` for installation.
 
 ## Dependencies
-*   `ryzenadj` (installed in `/usr/local/bin/`)
-*   `kscreen-doctor` (KDE standard tool)
-*   `python3`
+
+- `ryzenadj` (installed in `/usr/local/bin/`)
+- `tuned` (Fedora default)
+- `python3`

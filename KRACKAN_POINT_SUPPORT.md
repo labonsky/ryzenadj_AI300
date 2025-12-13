@@ -2,150 +2,143 @@
 
 This fork of [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) includes full support for **Krackan Point** (AMD Ryzen AI 300 series) processors.
 
-## Overview
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| **RyzenAdj** | Working | PM table size fix applied |
-| **ryzen_smu** | Patched | Full Krackan Point support added |
-| **Power Automation** | Working | Systemd service + KDE widgets |
-
 ## Hardware Specifications
 
 | Property | Value |
 |----------|-------|
 | Codename | Krackan Point |
-| Product | AMD Ryzen AI 300 Series |
-| Architecture | Zen 5 |
+| Product | AMD Ryzen AI 5 340 / AI 7 350 |
+| Architecture | Zen 5 + Zen 5c (hybrid) |
 | CPU Family | 0x1A |
 | CPU Model | 0x60 (96) |
 | PM Table Version | 0x650005 |
 | PM Table Size | 0xD80 (3456 bytes) |
+| Base TDP | 28W |
+| Configurable TDP | 15-54W |
+
+## Component Status
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| **RyzenAdj** | Working | PM table size fix applied |
+| **ryzen_smu** | Patched | Full Krackan Point support |
+| **tuned profiles** | Working | Auto-switching via udev |
+| **KDE integration** | Working | Power profiles + widgets |
 
 ## Changes from Upstream
 
 ### RyzenAdj (lib/api.c)
 
-Single line addition for PM table size:
-
 ```c
 case 0x650005: ry->table_size = 0xD80; break;  // Krackan Point
 ```
 
-Without this fix, Krackan Point falls to default size (0x1000), which works but is larger than necessary.
-
 ### ryzen_smu (ryzen_smu/)
 
-Fresh clone of [amkillam/ryzen_smu](https://github.com/amkillam/ryzen_smu) v0.1.7 with Krackan Point patches:
+Patched v0.1.7 with Krackan Point support:
+- `smu.h`: Added `CODENAME_KRACKANPOINT` enum
+- `smu.c`: CPU detection, mailbox config, PM table version/size
+- `lib/libsmu.h`, `lib/libsmu.c`: Userspace library patches
 
-- **smu.h**: Added `CODENAME_KRACKANPOINT` enum
-- **smu.c**: 9 additions for CPU detection, mailbox config, PM table
-- **lib/libsmu.h**: Added enum
-- **lib/libsmu.c**: Added codename string
-
-See `ryzen_smu/KRACKAN_POINT.md` for details.
+See `ryzen_smu/KRACKAN_POINT.md` for patch details.
 
 ## Installation
-
-### 1. Build RyzenAdj
-
-```bash
-cd /home/labonsky/Projects/ryzenadj
-mkdir -p build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make
-sudo cp ryzenadj /usr/local/bin/
-```
-
-### 2. Install ryzen_smu (Optional)
-
-RyzenAdj works with `/dev/mem` by default. For the safer ryzen_smu driver:
-
-```bash
-cd /home/labonsky/Projects/ryzenadj/ryzen_smu
-sudo ./install.sh
-```
-
-### 3. Verify
-
-```bash
-sudo ryzenadj -i
-```
-
-## Power Automation
-
-See `WIDGET_SETUP.md` for the systemd service and KDE widget configuration.
 
 ### Quick Start
 
 ```bash
-# Start the power management service
-sudo systemctl start ryzenadj-feeder.service
-sudo systemctl enable ryzenadj-feeder.service
+# Clone
+git clone https://github.com/labonsky/ryzenadj_AI300.git
+cd ryzenadj_AI300
 
-# Check status
-sudo systemctl status ryzenadj-feeder.service
+# Build RyzenAdj
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j$(nproc)
+sudo cp ryzenadj /usr/local/bin/
+cd ..
+
+# Install ryzen_smu kernel module
+cd ryzen_smu && sudo ./install.sh && cd ..
+
+# Install tuned profiles (Fedora)
+cd tuned-profiles && sudo ./install.sh && cd ..
+
+# Verify
+sudo ryzenadj -i
+tuned-adm list | grep ryzenadj
 ```
 
-### Power Profiles
+## Power Profiles
 
-| Mode | STAPM | Fast | Slow | Refresh |
-|------|-------|------|------|---------|
-| Battery | 5W | 7W | 5W | 60Hz |
-| AC | 51W | 51W | 33W | 120Hz |
+### tuned Integration (Fedora)
+
+| Profile | Inherits | STAPM | Fast | Slow | Screen |
+|---------|----------|-------|------|------|--------|
+| `ryzenadj-battery` | powersave | 5W | 10W | 5W | 60Hz |
+| `ryzenadj-balanced` | powersave | 5W | 10W | 5W | 60Hz |
+| `ryzenadj-ac` | throughput-performance | 53W | 53W | 35W | 120Hz |
+
+### KDE Power Profiles Mapping
+
+| KDE GUI | tuned Profile |
+|---------|---------------|
+| Power Saver | ryzenadj-battery |
+| Balanced | ryzenadj-balanced |
+| Performance | ryzenadj-ac |
+
+### Manual Switching
+
+```bash
+sudo tuned-adm profile ryzenadj-battery  # Low power
+sudo tuned-adm profile ryzenadj-ac       # Full power
+tuned-adm active                          # Check current
+```
 
 ## File Structure
 
 ```
 ryzenadj/
-├── lib/api.c              # +1 line PM table fix
+├── lib/api.c              # PM table size fix
 ├── ryzen_smu/             # Patched kernel module
-│   ├── install.sh         # Installation script
-│   ├── KRACKAN_POINT.md   # Patch documentation
-│   ├── smu.c              # Patched
-│   ├── smu.h              # Patched
-│   └── lib/               # Userspace library (patched)
-├── power_feeder.py        # Power management automation
-├── power_widget.py        # KDE widget (unused)
-├── show_watts.sh          # Widget helper
-├── show_laptop_watts.sh   # Widget helper
-├── WIDGET_SETUP.md        # Widget documentation
-└── KRACKAN_POINT_SUPPORT.md  # This file
+├── tuned-profiles/        # Fedora tuned integration
+│   ├── install.sh
+│   ├── ppd.conf           # KDE power profiles mapping
+│   ├── 99-ryzenadj-power.rules
+│   ├── ryzenadj-battery/
+│   ├── ryzenadj-balanced/
+│   └── ryzenadj-ac/
+├── power_feeder.py        # Widget power monitoring
+├── show_watts.sh          # KDE widget helper
+├── show_laptop_watts.sh   # KDE widget helper
+└── WIDGET_SETUP.md        # Widget documentation
 ```
-
-## Upstream Contributions
-
-Consider submitting these patches upstream:
-
-1. **RyzenAdj**: PM table size for 0x650005
-   - Target: https://github.com/FlyGoat/RyzenAdj
-
-2. **ryzen_smu**: Krackan Point support
-   - Target: https://github.com/amkillam/ryzen_smu
 
 ## Troubleshooting
 
-### RyzenAdj shows "Unsupported"
+### Check Detection
 
-Krackan Point should be detected automatically. If not:
 ```bash
+# CPU info
 cat /proc/cpuinfo | grep -E "family|model"
+# Should show: Family 26 (0x1A), Model 96 (0x60)
+
+# ryzen_smu
+cat /sys/kernel/ryzen_smu_drv/codename
+# Should show: 27 (CODENAME_KRACKANPOINT)
+
+# PM table version
+sudo od -A x -t x1z /sys/kernel/ryzen_smu_drv/pm_table_version
+# Should show: 05 00 65 00 (0x650005)
 ```
-Should show Family 26 (0x1A), Model 96 (0x60).
 
-### ryzen_smu module doesn't load
+### Common Issues
 
-```bash
-dmesg | grep -i ryzen_smu
-```
-
-Check for CPUID detection or SMU initialization errors.
-
-### PM table read fails
-
-The PM table size (0xD80) was estimated. If you see corruption or errors, try adjusting:
-- Larger: 0xE00
-- Smaller: 0xD54
+| Issue | Solution |
+|-------|----------|
+| "Unsupported" | Check CPU family/model matches |
+| Module won't load | Check dmesg, verify Secure Boot MOK |
+| PM table fails | Verify codename 27 detected |
 
 ## License
 
