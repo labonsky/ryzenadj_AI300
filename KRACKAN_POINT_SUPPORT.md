@@ -120,6 +120,7 @@ tuned-adm active                          # Check current
 
 - **On plug/unplug:** udev rules detect AC state changes
 - **On boot:** systemd service checks AC state and applies correct profile
+- **Screen refresh:** Automatically sets 60Hz (battery) or 120Hz (AC) via kscreen-doctor
 
 ## File Structure
 
@@ -130,9 +131,10 @@ ryzenadj/
 ├── tuned-profiles/        # Fedora tuned integration
 │   ├── install.sh
 │   ├── ppd.conf           # KDE power profiles mapping
-│   ├── 99-ryzenadj-power.rules
-│   ├── ryzenadj-boot-check.sh      # Boot-time profile check
-│   ├── ryzenadj-boot-check.service # Systemd service
+│   ├── 99-ryzenadj-power.rules    # AC/battery auto-switching
+│   ├── 99-ryzenadj-rapl.rules     # RAPL permissions for widget
+│   ├── ryzenadj-boot-check.sh     # Boot-time profile check
+│   ├── ryzenadj-boot-check.service
 │   ├── ryzenadj-battery/
 │   ├── ryzenadj-balanced/
 │   └── ryzenadj-ac/
