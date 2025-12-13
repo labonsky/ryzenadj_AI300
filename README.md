@@ -1,11 +1,30 @@
-# RyzenAdj
+# RyzenAdj - Krackan Point (AMD Ryzen AI 300) Fork
+
 Adjust power management settings for Ryzen Mobile Processors.
 
-[![Build Status](https://travis-ci.org/FlyGoat/RyzenAdj.svg?branch=master)](https://travis-ci.org/FlyGoat/RyzenAdj)
+**This fork adds full support for AMD Ryzen AI 300 series (Krackan Point) processors.**
 
-Based on: [FlyGoat/ryzen_nb_smu](https://github.com/flygoat/ryzen_nb_smu)
+Based on: [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) v0.18.0
 
-RyzenAdjUI_WPF by "JustSkill" is no longer maintained, for GUI please see  [Universal x86 Tuning Utility](https://github.com/JamesCJ60/Universal-x86-Tuning-Utility) or [ryzen-controller-team/ryzen-controller](https://gitlab.com/ryzen-controller-team/ryzen-controller/).
+## Krackan Point Support
+
+| Property | Value |
+|----------|-------|
+| Codename | Krackan Point |
+| Product | AMD Ryzen AI 300 Series |
+| Architecture | Zen 5 |
+| CPU Family | 0x1A |
+| CPU Model | 0x60 (96) |
+| PM Table Version | 0x650005 |
+| PM Table Size | 0xD80 (3456 bytes) |
+
+### Changes from Upstream
+
+- **RyzenAdj**: Added PM table size for version 0x650005
+- **ryzen_smu**: Included patched v0.1.7 with full Krackan Point support
+- **Power Automation**: Systemd service for automatic power management
+
+For GUI options see [Universal x86 Tuning Utility](https://github.com/JamesCJ60/Universal-x86-Tuning-Utility) or [ryzen-controller](https://gitlab.com/ryzen-controller-team/ryzen-controller/).
 
 ## Usage
 The command line interface is identical on both Windows and Unix-Like OS.
@@ -70,132 +89,160 @@ then the command line should be:
 - [Options](https://github.com/FlyGoat/RyzenAdj/wiki/Options)
 - [FAQ](https://github.com/FlyGoat/RyzenAdj/wiki/FAQ)
 
-## Installation
+## Quick Start (Krackan Point / Ryzen AI 300)
 
-You don't need to install RyzenAdj because it does not need configuration, everything is set via arguments
-However, some settings could get overwritten by power management features of your device, and you need to regularly set your values again.
+### Prerequisites
 
-We did provide some examples for automation. And these require configuration during installation.
+**Fedora:**
+```bash
+sudo dnf install cmake gcc-c++ pciutils-devel dkms kernel-devel kernel-headers
+```
 
-### Linux Installation
+**Ubuntu/Debian:**
+```bash
+sudo apt install build-essential cmake libpci-dev dkms linux-headers-$(uname -r)
+```
 
-Because it is very easy to build the latest version of RyzenAdj on Linux, we don't provide precompiled packages for distributions.
-Just follow the build instructions below and you are ready to use it.
+**Arch:**
+```bash
+sudo pacman -S base-devel pciutils cmake dkms linux-headers
+```
 
-### Windows Installation
+### Installation
 
-Before you start installing anything, it is highly recommended getting familiar with RyzenAdj to find out what can be done on your device.
-Use the CLI `ryzenadj.exe` to test the support of your device and to benchmark the effects of each setting.
-If your values don't stay persistent you may want to consider installing our example script for automation.
+```bash
+# Clone this repository
+git clone https://github.com/labonsky/ryzenadj_AI300.git
+cd ryzenadj_AI300
 
-1. Prepare your favorite RyzenAdj arguments
-1. Copy the content of your RyzenAdj folder to the final destination
-1. Put your configuration into `readjustService.ps1` and test it as administrator until everything works as expected
-1. Install `readjustService.ps1` as Task for Windows Task Scheduler by running `installServiceTask.bat`
+# Build RyzenAdj
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j$(nproc)
+sudo cp ryzenadj /usr/local/bin/
+cd ..
 
-Deinstallation of the Task can be done via `uninstallServiceTask.bat`
+# Install ryzen_smu kernel module (recommended for Krackan Point)
+cd ryzen_smu
+sudo ./install.sh
+cd ..
 
-Over Windows Task Scheduler you can check if it is running. It is called `RyzenAdj` below `AMD` folder.
-Or just run
+# Test
+sudo ryzenadj -i
+```
 
-    SCHTASKS /query /TN "AMD\RyzenAdj"
+### Verify Installation
 
-## Build
+```bash
+# Check RyzenAdj
+sudo ryzenadj -i
 
-### Build Requirements
+# Check ryzen_smu module
+lsmod | grep ryzen_smu
+cat /sys/kernel/ryzen_smu_drv/codename
 
-Building this tool requires C & C++ compilers as well as **cmake**.
+# Should show power metrics and detect "Krackan Point"
+```
+
+### Secure Boot
+
+If using Secure Boot, enroll the DKMS signing key:
+
+```bash
+sudo mokutil --import /var/lib/dkms/mok.pub
+# Reboot and enroll in MOK manager
+```
+
+---
+
+## Power Automation (Optional)
+
+This fork includes a power management service that automatically adjusts power limits based on AC/battery status.
+
+### Setup
+
+```bash
+# Copy service file (adjust paths as needed)
+sudo cp power_feeder.py /opt/ryzenadj/
+sudo tee /etc/systemd/system/ryzenadj-feeder.service << 'EOF'
+[Unit]
+Description=RyzenAdj Power Feeder
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/ryzenadj/power_feeder.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable --now ryzenadj-feeder.service
+```
+
+### Power Profiles
+
+| Mode | STAPM | Fast | Slow | Refresh |
+|------|-------|------|------|---------|
+| Battery | 5W | 7W | 5W | 60Hz |
+| AC | 51W | 51W | 33W | 120Hz |
+
+See [WIDGET_SETUP.md](WIDGET_SETUP.md) for KDE widget integration.
+
+---
+
+## Standard Installation
 
 ### Linux
 
-RyzenAdj needs elevated access to the NB config space. This can be achieved by using either one of
-these two methods:
+RyzenAdj needs elevated access to the SMU. Two methods are supported:
 
-* Using libpci and exposing `/dev/mem`
-* Using the ryzen\_smu kernel module
+1. **ryzen_smu kernel module** (recommended) - Included in this repo with Krackan Point support
+2. **/dev/mem** (fallback) - Requires `iomem=relaxed` kernel parameter
 
-RyzenAdj will try ryzen\_smu first, and then fallback to /dev/mem, if no compatible smu driver is found.  
-The minimum supported version of ryzen_smu is 0.1.7  
-If no backend is available, RyzenAdj will fail initialization.  
+RyzenAdj will try ryzen_smu first, then fallback to /dev/mem.
 
-_**Please note that `/dev/mem` access may be restricted, for security reasons, in your kernel config**_
+#### Build from Source
 
-Please make sure that you have libpci dependency before compiling.
-
-On Debian-based distros this is covered by installing **pcilib-dev** package:
-
-    sudo apt install build-essential cmake libpci-dev
-
-On Fedora:
-
-    sudo dnf install cmake gcc-c++ pciutils-devel
-
-On Arch:
-
-    sudo pacman -S base-devel pciutils cmake
-
-
-On OpenSUSE Tumbleweed:
-
-    sudo zypper in cmake gcc14-c++ pciutils-devel
-
-You may need to add the `iomem=relaxed` param to your kernel params on Tumbleweed, or [you may run into errors at runtime](https://github.com/FlyGoat/RyzenAdj/issues/241). 
-
-If your Distribution is not supported, try finding the packages or use [Distrobox](https://github.com/89luca89/distrobox) or [Toolbox](https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox/) instead.
-
-The simplest way to build it:
-
-    git clone https://github.com/FlyGoat/RyzenAdj.git
-    cd RyzenAdj
-    rm -r win32
-    mkdir build && cd build
-    cmake -DCMAKE_BUILD_TYPE=Release ..
-    make
-    if [ -d ~/.local/bin ]; then ln -s $(readlink -f ryzenadj) ~/.local/bin/ryzenadj && echo "symlinked to ~/.local/bin/ryzenadj"; fi
-    if [ -d ~/.bin ]; then ln -s $(readlink -f ryzenadj) ~/.bin/ryzenadj && echo "symlinked to ~/.bin/ryzenadj"; fi
-
-#### Ryzen\_smu
-
-To let RyzenAdj use ryzen\_smu module, you have to install it first, it is not part of the linux kernel.
-
-On Fedora:
-
-```sh
-sudo dnf install cmake gcc gcc-c++ dkms openssl
+```bash
+git clone https://github.com/labonsky/ryzenadj_AI300.git
+cd ryzenadj_AI300
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j$(nproc)
+sudo cp ryzenadj /usr/local/bin/
 ```
 
-Clone and install ryzen\_smu:
+#### Install ryzen_smu (Krackan Point Patched)
 
-```sh
-git clone https://github.com/amkillam/ryzen_smu # Active fork of the original module
-(cd ryzen_smu/ && sudo make dkms-install)
+The included `ryzen_smu/` directory contains [amkillam/ryzen_smu](https://github.com/amkillam/ryzen_smu) v0.1.7 with Krackan Point patches.
+
+```bash
+cd ryzen_smu
+sudo ./install.sh
 ```
 
-If you are using secure boot, you have to enroll the UEFI keys which dkms has generated on its first
-run. These have to be added to your machines UEFI key database. This can be done with following
-command, which will ask you to set a password. This password is only needed _one single time_ later
-in the MOK manager.
+Or manually:
 
-```sh
-sudo mokutil --import /var/lib/dkms/mok.pub
+```bash
+cd ryzen_smu
+sudo dkms add .
+sudo dkms build ryzen_smu/0.1.7
+sudo dkms install ryzen_smu/0.1.7
+sudo modprobe ryzen_smu
 ```
 
-Restart your system. This will boot into the MOK manager. Choose `Enroll MOK`, enter your password
-and then reboot.
-[Here](https://github.com/dell/dkms/blob/f7f526c145ecc01fb4ac4eab3009b1879b14ced4/README.md#secure-boot)
-are some screenshots describing the process.
+#### Upstream ryzen_smu (Other Processors)
 
-The module is now loaded and visible via dmesg. It will show a message about the kernel being
-tainted, but this just means it loaded a (potentially proprietary) binary blob.
+For non-Krackan Point processors, you can use upstream:
 
-Build and install RyzenAdj:
-
-```sh
-git clone https://github.com/FlyGoat/RyzenAdj
-cd RyzenAdj
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-make -C build -j"$(nproc)"
-sudo cp -v build/ryzenadj /usr/local/bin/
+```bash
+git clone https://github.com/amkillam/ryzen_smu
+cd ryzen_smu && sudo make dkms-install
 ```
 
 ### Windows
