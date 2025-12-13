@@ -33,10 +33,24 @@ sudo journalctl -u ryzenadj-feeder.service -f
 
 ## 2. KDE Plasma Widget
 
-Add a "Command Output" widget to the KDE Panel:
+### Quick Install (RPM package)
 
-- **Command:** `/home/labonsky/Projects/ryzenadj/show_stats.sh`
-- **Interval:** 1000 ms
+After installing the RPM, run:
+
+```bash
+/usr/share/ryzenadj/install-widget.sh
+```
+
+Then add the widget to your panel:
+1. Right-click on your KDE panel → "Add Widgets..."
+2. Search for "Command Output"
+3. Drag it to your panel
+
+### Manual Install (from source)
+
+```bash
+cd widget && ./install-widget.sh
+```
 
 **Output format:** `Laptop | CPU | Temp` (e.g., `7.2 W | 3.5 W | 37°C`)
 

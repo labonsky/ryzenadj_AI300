@@ -68,10 +68,14 @@ install -D -m 644 tuned-profiles/99-ryzenadj-power.rules %{buildroot}%{_udevrule
 install -D -m 755 tuned-profiles/ryzenadj-boot-check.sh %{buildroot}%{_bindir}/ryzenadj-boot-check.sh
 install -D -m 644 tuned-profiles/ryzenadj-boot-check.service %{buildroot}%{_unitdir}/ryzenadj-boot-check.service
 
-# power feeder service
+# power feeder service and widget script
 install -D -m 755 power_feeder.py %{buildroot}%{_libexecdir}/ryzenadj/power_feeder.py
-install -D -m 755 show_watts.sh %{buildroot}%{_libexecdir}/ryzenadj/show_watts.sh
-install -D -m 755 show_laptop_watts.sh %{buildroot}%{_libexecdir}/ryzenadj/show_laptop_watts.sh
+install -D -m 755 show_stats.sh %{buildroot}%{_libexecdir}/ryzenadj/show_stats.sh
+
+# KDE widget
+install -d %{buildroot}%{_datadir}/ryzenadj/widget/com.github.zren.commandoutput
+cp -a widget/com.github.zren.commandoutput/* %{buildroot}%{_datadir}/ryzenadj/widget/com.github.zren.commandoutput/
+install -D -m 755 widget/install-widget.sh %{buildroot}%{_datadir}/ryzenadj/install-widget.sh
 
 %post
 # Register DKMS module
@@ -122,8 +126,12 @@ fi
 # widget helpers
 %dir %{_libexecdir}/ryzenadj
 %{_libexecdir}/ryzenadj/power_feeder.py
-%{_libexecdir}/ryzenadj/show_watts.sh
-%{_libexecdir}/ryzenadj/show_laptop_watts.sh
+%{_libexecdir}/ryzenadj/show_stats.sh
+
+# KDE widget
+%dir %{_datadir}/ryzenadj
+%{_datadir}/ryzenadj/install-widget.sh
+%{_datadir}/ryzenadj/widget/
 
 %changelog
 * Sat Dec 13 2025 labonsky - 0.19.0-1
