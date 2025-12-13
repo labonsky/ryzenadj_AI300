@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.7
+Version:        0.19.8
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -147,6 +147,10 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Sun Dec 14 2025 labonsky - 0.19.8-1
+- Fix wattage display: show 0.X W instead of .X W
+- Fix negative laptop wattage display
+
 * Sat Dec 13 2025 labonsky - 0.19.7-1
 - Fix profile script timing: add delay before ryzenadj
 - Add direct ryzenadj call in udev rules as backup
