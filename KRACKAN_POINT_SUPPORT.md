@@ -54,6 +54,9 @@ sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.1-1.fc43.x86_64.rpm
 
 # Install KDE widget
 /usr/share/ryzenadj/install-widget.sh
+# Then: Add Widgets → "Command Output" → Configure:
+#   Command: /usr/libexec/ryzenadj/show_stats.sh
+#   Interval: 1000
 
 # Verify
 sudo ryzenadj -i

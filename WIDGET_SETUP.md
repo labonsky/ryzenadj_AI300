@@ -41,10 +41,14 @@ After installing the RPM, run:
 /usr/share/ryzenadj/install-widget.sh
 ```
 
-Then add the widget to your panel:
+Then add and configure the widget:
 1. Right-click on your KDE panel → "Add Widgets..."
 2. Search for "Command Output"
 3. Drag it to your panel
+4. Right-click the widget → "Configure..."
+5. In the Command field, paste: `/usr/libexec/ryzenadj/show_stats.sh`
+6. Set interval to `1000` (1 second refresh)
+7. Click Apply
 
 ### Manual Install (from source)
 
