@@ -1,5 +1,7 @@
+#!/usr/bin/env python3
 import time
 import os
+import glob
 
 # CPU/APU Power Paths
 RAPL_PATH = "/sys/class/powercap/intel-rapl:0/energy_uj"
@@ -11,8 +13,24 @@ BAT_CURRENT = "/sys/class/power_supply/BAT1/current_now"
 BAT_STATUS  = "/sys/class/power_supply/BAT1/status"
 OUTPUT_PATH_BAT = "/home/labonsky/laptop_watts"
 
+# CPU Temperature Path
+OUTPUT_PATH_TEMP = "/home/labonsky/cpu_temp"
+
 # Note: Power profile switching is now handled by tuned + udev rules
 # This script only monitors and writes power data for widgets
+
+def find_k10temp():
+    """Find k10temp hwmon path (AMD CPU temperature)"""
+    for hwmon in glob.glob("/sys/class/hwmon/hwmon*"):
+        try:
+            with open(f"{hwmon}/name", 'r') as f:
+                if f.read().strip() == "k10temp":
+                    return f"{hwmon}/temp1_input"
+        except:
+            pass
+    return None
+
+K10TEMP_PATH = find_k10temp()
 
 def read_file_int(path):
     try:
@@ -72,3 +90,9 @@ while True:
             write_output(OUTPUT_PATH_BAT, f"{watts_bat:.1f} W")
     else:
         write_output(OUTPUT_PATH_BAT, "AC Mode")
+
+    # --- Part 3: CPU Temperature ---
+    if K10TEMP_PATH:
+        temp_milli = read_file_int(K10TEMP_PATH)
+        temp_c = temp_milli / 1000.0
+        write_output(OUTPUT_PATH_TEMP, f"{temp_c:.0f}°C")

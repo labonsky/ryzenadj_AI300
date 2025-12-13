@@ -1,7 +1,7 @@
 # RyzenAdj Power Monitor for KDE Plasma
 
 This solution provides:
-1. **Power Monitoring:** Displays live wattage for CPU and total laptop power
+1. **Power Monitoring:** Displays live CPU power, total laptop power, and CPU temperature
 2. **Auto-Power Management:** Via tuned profiles with udev auto-switching
 
 ## Power Profiles
@@ -21,6 +21,7 @@ The `power_feeder.py` script runs as root and writes power data to user-readable
 
 - `~/ryzenadj_watts` - CPU power consumption
 - `~/laptop_watts` - Total laptop power (battery discharge)
+- `~/cpu_temp` - CPU temperature (Tctl)
 
 ### Service Management
 
@@ -32,7 +33,7 @@ sudo journalctl -u ryzenadj-feeder.service -f
 
 ## 2. KDE Plasma Widgets
 
-Use two "Command Output" widgets on the KDE Panel:
+Use three "Command Output" widgets on the KDE Panel:
 
 ### Widget 1: CPU Power
 - **Command:** `/home/labonsky/Projects/ryzenadj/show_watts.sh`
@@ -40,6 +41,10 @@ Use two "Command Output" widgets on the KDE Panel:
 
 ### Widget 2: Total Laptop Power
 - **Command:** `/home/labonsky/Projects/ryzenadj/show_laptop_watts.sh`
+- **Interval:** 1000 ms
+
+### Widget 3: CPU Temperature
+- **Command:** `/home/labonsky/Projects/ryzenadj/show_temp.sh`
 - **Interval:** 1000 ms
 
 ## 3. Power Profile Switching
