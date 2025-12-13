@@ -50,13 +50,12 @@ Download from [GitHub Releases](https://github.com/labonsky/ryzenadj_AI300/relea
 
 ```bash
 # Install RPM
-sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.5-1.fc43.x86_64.rpm
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.6-1.fc43.x86_64.rpm
 
 # Install KDE widget
 /usr/share/ryzenadj/install-widget.sh
-# Then: Add Widgets → "Command Output" → Configure:
-#   Command: /usr/libexec/ryzenadj/show_stats.sh
-#   Interval: 1000
+# Then: Add Widgets → "Command Output" → drag to panel
+# Widget is pre-configured, no manual setup needed
 
 # Verify
 sudo ryzenadj -i

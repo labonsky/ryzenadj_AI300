@@ -35,14 +35,12 @@ After installing the RPM, run:
 /usr/share/ryzenadj/install-widget.sh
 ```
 
-Then add and configure the widget:
+Then add the widget to your panel:
 1. Right-click on your KDE panel → "Add Widgets..."
 2. Search for "Command Output"
 3. Drag it to your panel
-4. Right-click the widget → "Configure..."
-5. In the Command field, paste: `/usr/libexec/ryzenadj/show_stats.sh`
-6. Set interval to `1000` (1 second refresh)
-7. Click Apply
+
+The widget is **pre-configured** - no manual setup needed.
 
 ### Manual Install (from source)
 
@@ -77,4 +75,4 @@ See `tuned-profiles/install.sh` for installation.
 
 ## Version
 
-Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.5+
+Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.6+
