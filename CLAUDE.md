@@ -152,11 +152,11 @@ sudo tuned-adm profile ryzenadj-ac       # 53W/35W, 120Hz
 
 ## Power Profiles
 
-| Profile | Fast | Slow | Screen | Use Case |
-|---------|------|------|--------|----------|
-| ryzenadj-battery | 10W | 5W | 60Hz | Battery life |
-| ryzenadj-balanced | 10W | 5W | 60Hz | Same as battery |
-| ryzenadj-ac | 53W | 35W | 120Hz | Full performance |
+| Profile | STAPM | Fast | Slow | Screen | Use Case |
+|---------|-------|------|------|--------|----------|
+| ryzenadj-battery | 5W | 10W | 5W | 60Hz | Battery life |
+| ryzenadj-balanced | 5W | 10W | 5W | 60Hz | Same as battery |
+| ryzenadj-ac | 53W | 53W | 35W | 120Hz | Full performance |
 
 ## Sudo Access
 
