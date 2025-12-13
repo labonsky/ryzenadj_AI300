@@ -31,21 +31,14 @@ sudo systemctl restart ryzenadj-feeder.service
 sudo journalctl -u ryzenadj-feeder.service -f
 ```
 
-## 2. KDE Plasma Widgets
+## 2. KDE Plasma Widget
 
-Use three "Command Output" widgets on the KDE Panel:
+Add a "Command Output" widget to the KDE Panel:
 
-### Widget 1: CPU Power
-- **Command:** `/home/labonsky/Projects/ryzenadj/show_watts.sh`
+- **Command:** `/home/labonsky/Projects/ryzenadj/show_stats.sh`
 - **Interval:** 1000 ms
 
-### Widget 2: Total Laptop Power
-- **Command:** `/home/labonsky/Projects/ryzenadj/show_laptop_watts.sh`
-- **Interval:** 1000 ms
-
-### Widget 3: CPU Temperature
-- **Command:** `/home/labonsky/Projects/ryzenadj/show_temp.sh`
-- **Interval:** 1000 ms
+**Output format:** `CPU | Laptop | Temp` (e.g., `3.5 W | 7.2 W | 37°C`)
 
 ## 3. Power Profile Switching
 
