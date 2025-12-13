@@ -50,14 +50,17 @@ Download from [GitHub Releases](https://github.com/labonsky/ryzenadj_AI300/relea
 
 ```bash
 # Install RPM
-sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.0-1.fc43.x86_64.rpm
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.1-1.fc43.x86_64.rpm
+
+# Install KDE widget
+/usr/share/ryzenadj/install-widget.sh
 
 # Verify
 sudo ryzenadj -i
 tuned-adm list | grep ryzenadj
 ```
 
-The RPM includes everything: ryzenadj binary, ryzen_smu DKMS module, tuned profiles, and auto-switching.
+The RPM includes everything: ryzenadj binary, ryzen_smu DKMS module, tuned profiles, auto-switching, and KDE widget.
 
 ### Build from Source
 
@@ -132,9 +135,12 @@ ryzenadj/
 │   └── ryzenadj-ac/
 ├── rpm/                   # RPM packaging
 │   └── ryzenadj-ryzen_smu-ai300-krackan-PP.spec
-├── power_feeder.py        # Widget power monitoring
-├── show_watts.sh          # KDE widget helper
-├── show_laptop_watts.sh   # KDE widget helper
+├── widget/                # KDE Command Output widget
+│   ├── install-widget.sh
+│   └── com.github.zren.commandoutput/
+├── power_feeder.py        # Power monitoring service
+├── show_stats.sh          # Combined stats (Laptop | CPU | Temp)
+├── archive/               # Archived old scripts
 └── WIDGET_SETUP.md        # Widget documentation
 ```
 

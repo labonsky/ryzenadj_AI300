@@ -73,6 +73,10 @@ See `tuned-profiles/install.sh` for installation.
 
 ## Dependencies
 
-- `ryzenadj` (installed in `/usr/local/bin/`)
+- `ryzenadj` (RPM: `/usr/bin/`, source: `/usr/local/bin/`)
 - `tuned` (Fedora default)
 - `python3`
+
+## Version
+
+Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.1+
