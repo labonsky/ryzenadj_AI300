@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
 URL:            https://github.com/labonsky/ryzenadj_AI300
-Source0:        %{name}-%{version}.tar.gz
+Source0:        https://github.com/labonsky/ryzenadj_AI300/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:  cmake >= 3.9
 BuildRequires:  gcc
@@ -32,7 +32,7 @@ Power Profiles:
 - KDE Power Profiles GUI integration
 
 %prep
-%setup -q
+%setup -q -n ryzenadj_AI300-%{version}
 
 %build
 mkdir -p build
