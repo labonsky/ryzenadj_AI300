@@ -59,7 +59,6 @@ install -d %{buildroot}%{_sysconfdir}/tuned/profiles/ryzenadj-ac
 cp -a tuned-profiles/ryzenadj-battery/* %{buildroot}%{_sysconfdir}/tuned/profiles/ryzenadj-battery/
 cp -a tuned-profiles/ryzenadj-balanced/* %{buildroot}%{_sysconfdir}/tuned/profiles/ryzenadj-balanced/
 cp -a tuned-profiles/ryzenadj-ac/* %{buildroot}%{_sysconfdir}/tuned/profiles/ryzenadj-ac/
-install -D -m 644 tuned-profiles/ppd.conf %{buildroot}%{_sysconfdir}/tuned/ppd.conf
 
 # udev rules
 install -D -m 644 tuned-profiles/99-ryzenadj-power.rules %{buildroot}%{_udevrulesdir}/99-ryzenadj-power.rules
@@ -85,6 +84,20 @@ dkms install -m ryzen_smu -v 0.1.7 --force || :
 
 # Load module
 modprobe ryzen_smu || :
+
+# Configure ppd.conf for KDE power profiles integration
+if [ -f /etc/tuned/ppd.conf ]; then
+    cat > /etc/tuned/ppd.conf << 'PPDEOF'
+[main]
+default=power-saver
+battery_detection=false
+
+[profiles]
+power-saver=ryzenadj-battery
+balanced=ryzenadj-balanced
+performance=ryzenadj-ac
+PPDEOF
+fi
 
 # Reload services
 udevadm control --reload-rules || :
@@ -116,7 +129,6 @@ fi
 %config(noreplace) %{_sysconfdir}/tuned/profiles/ryzenadj-battery/
 %config(noreplace) %{_sysconfdir}/tuned/profiles/ryzenadj-balanced/
 %config(noreplace) %{_sysconfdir}/tuned/profiles/ryzenadj-ac/
-%config(noreplace) %{_sysconfdir}/tuned/ppd.conf
 %{_udevrulesdir}/99-ryzenadj-power.rules
 
 # services
