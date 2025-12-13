@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.3
+Version:        0.19.4
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -147,6 +147,9 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Sat Dec 13 2025 labonsky - 0.19.4-1
+- Update documentation with RAPL rules and screen refresh info
+
 * Sat Dec 13 2025 labonsky - 0.19.3-1
 - Fix ryzenadj path: /usr/local/bin -> /usr/bin in tuned scripts
 - Dynamic user detection for kscreen-doctor (works for any user)
