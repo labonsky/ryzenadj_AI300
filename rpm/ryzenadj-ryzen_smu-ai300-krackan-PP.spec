@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.0
+Version:        0.19.1
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -21,7 +21,7 @@ Complete power management suite for AMD Ryzen AI 300 series (Krackan Point)
 processors including Ryzen AI 5 340 and AI 7 350.
 
 Components:
-- ryzenadj: Command-line power adjustment tool (v0.19.0)
+- ryzenadj: Command-line power adjustment tool (v0.19.1)
 - ryzen_smu: Kernel module for SMU communication (v0.1.7, DKMS)
 - Power Profiles: tuned integration with auto-switching
 
@@ -146,6 +146,11 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Sat Dec 13 2025 labonsky - 0.19.1-1
+- Add KDE Command Output widget with install script
+- Fix ppd.conf conflict with tuned-ppd package
+- Combined stats widget (Laptop | CPU | Temp)
+
 * Sat Dec 13 2025 labonsky - 0.19.0-1
 - Initial unified package for Krackan Point
 - ryzenadj with PM table fix for 0x650005
