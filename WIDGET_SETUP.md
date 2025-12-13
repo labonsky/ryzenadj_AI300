@@ -69,7 +69,7 @@ See `tuned-profiles/install.sh` for installation.
 
 ## Dependencies
 
-- `ryzenadj` (RPM: `/usr/bin/`, source: `/usr/local/bin/`)
+- `ryzenadj` (`/usr/bin/ryzenadj`)
 - `tuned` (Fedora default)
 - `bc` (for calculations in show_stats.sh)
 

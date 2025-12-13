@@ -77,7 +77,7 @@ cd ryzenadj_AI300
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(nproc)
-sudo cp ryzenadj /usr/local/bin/
+sudo cp ryzenadj /usr/bin/
 cd ..
 
 # Install ryzen_smu kernel module
