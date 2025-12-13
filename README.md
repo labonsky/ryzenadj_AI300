@@ -277,10 +277,6 @@ The `ryzenadj-battery` profile inherits these additional power savings from Fedo
 | `radeon_powersave=dpm-battery` | GPU power saving |
 | `alpm=med_power_with_dipm` | SATA link power management |
 
-### Legacy: Standalone Power Feeder (Alternative)
-
-For non-Fedora systems or if you prefer a standalone service, see `power_feeder.py` in this repository.
-
 ---
 
 ## Standard Installation

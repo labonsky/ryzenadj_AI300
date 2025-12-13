@@ -71,7 +71,7 @@ lsmod | grep ryzen_smu
 # Sysfs created
 ls /sys/kernel/ryzen_smu_drv/
 
-# Codename detected (should show 28 for KRACKANPOINT)
+# Codename detected (should show 27 for KRACKANPOINT)
 cat /sys/kernel/ryzen_smu_drv/codename
 
 # Kernel messages

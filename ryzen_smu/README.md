@@ -36,12 +36,15 @@ The following processor code names are supported:
 - [Granite Ridge](https://en.wikichip.org/wiki/amd/cores/granite_ridge)
 - [Hawk Point](https://en.wikichip.org/wiki/amd/cores/hawk_point)
 - [Storm Peak](https://en.wikichip.org/wiki/amd/cores/storm_peak)
+- Strix Halo
+- Krackan Point (AMD Ryzen AI 300 Series)
 
 In addition, for the following models, the power metrics/monitoring (PM) table (seen in screenshot)
 can also be accessed:
 
 - Granite Ridge ( Ryzen 9000 Desktop Series )
-- Strix Point ( Ryzen AI 300 )
+- Strix Point ( Ryzen AI 300 Series )
+- Krackan Point ( Ryzen AI 300 Series )
 - Hawk Point ( Ryzen 8000 Mobile Series )
 - Phoenix ( Ryzen 8000 APU Series )
 - Storm Peak ( ThreadRipper 7000 Workstation Series )
@@ -259,6 +262,8 @@ enumeration:
 | 17h | 23      | Granite Ridge  |
 | 18h | 24      | Hawk Point     |
 | 19h | 25      | Storm Peak     |
+| 1Ah | 26      | Strix Halo     |
+| 1Bh | 27      | Krackan Point  |
 
 Note: This file returns 2 characters of the 'Decimal' encoded index.
 
