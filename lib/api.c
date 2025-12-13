@@ -168,6 +168,7 @@ static int request_table_ver_and_size(ryzen_access ry) {
 		case 0x5D0008:
 		case 0x5D0009: ry->table_size = 0xD54; break;
 		case 0x64020c: ry->table_size = 0xE50; break;
+		case 0x650005: ry->table_size = 0xD80; break;  // Krackan Point (Zen 5) - estimate, may need verification
 
 		// use a larger size then the largest known table to be able to test real table size of unknown tables
 		default: ry->table_size = 0x1000; break;
