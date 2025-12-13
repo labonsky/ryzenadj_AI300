@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.5
+Version:        0.19.6
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -147,6 +147,9 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Sat Dec 13 2025 labonsky - 0.19.6-1
+- Fix RAPL counter overflow in show_stats.sh (negative CPU power)
+
 * Sat Dec 13 2025 labonsky - 0.19.5-1
 - Fix boot-check service path: /usr/local/bin -> /usr/bin
 - Fix install.sh path consistency

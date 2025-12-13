@@ -16,7 +16,12 @@ get_cpu_power() {
         if [[ -n "$prev_energy" && -n "$prev_time" ]]; then
             local diff_energy=$((curr_energy - prev_energy))
             local diff_time=$((curr_time - prev_time))
-            if [[ $diff_time -gt 0 ]]; then
+            # Handle RAPL counter overflow (wraps at ~65.5 GJ)
+            if [[ $diff_energy -lt 0 ]]; then
+                local max_range=$(cat /sys/class/powercap/intel-rapl:0/max_energy_range_uj 2>/dev/null)
+                [[ -n "$max_range" ]] && diff_energy=$((diff_energy + max_range))
+            fi
+            if [[ $diff_time -gt 0 && $diff_energy -ge 0 ]]; then
                 # energy in uJ, time in ns -> watts = (uJ * 1000) / ns
                 local watts=$(echo "scale=1; $diff_energy * 1000 / $diff_time" | bc 2>/dev/null)
                 [[ -n "$watts" ]] && echo "${watts} W" || echo "?"
