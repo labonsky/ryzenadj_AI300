@@ -164,7 +164,7 @@ This fork includes tuned profiles that integrate with Fedora's power management,
 | Profile | Inherits | STAPM | Fast | Slow | Screen |
 |---------|----------|-------|------|------|--------|
 | `ryzenadj-battery` | powersave | 5W | 10W | 5W | 60Hz |
-| `ryzenadj-ac` | balanced | 53W | 53W | 35W | 120Hz |
+| `ryzenadj-ac` | throughput-performance | 53W | 53W | 35W | 120Hz |
 
 ### Power Limit Explanation
 
@@ -204,14 +204,11 @@ exit 0
 EOF
 sudo chmod +x /etc/tuned/profiles/ryzenadj-battery/script.sh
 
-# AC profile (inherits Fedora's balanced settings)
+# AC profile (inherits Fedora's performance settings)
 sudo tee /etc/tuned/profiles/ryzenadj-ac/tuned.conf << 'EOF'
 [main]
 summary=AC full power with ryzenadj (53W defaults)
-include=balanced
-
-[cpu]
-boost=1
+include=throughput-performance
 
 [script]
 script=${i:PROFILE_DIR}/script.sh
