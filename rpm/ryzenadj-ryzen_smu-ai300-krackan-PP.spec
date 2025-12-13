@@ -21,7 +21,7 @@ Complete power management suite for AMD Ryzen AI 300 series (Krackan Point)
 processors including Ryzen AI 5 340 and AI 7 350.
 
 Components:
-- ryzenadj: Command-line power adjustment tool (v0.19.2)
+- ryzenadj: Command-line power adjustment tool (based on upstream v0.18.0)
 - ryzen_smu: Kernel module for SMU communication (v0.1.7, DKMS)
 - Power Profiles: tuned integration with auto-switching
 - KDE widget: Power monitoring (Laptop | CPU | Temp)
