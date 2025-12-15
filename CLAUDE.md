@@ -174,4 +174,4 @@ Claude Code uses `SUDO_ASKPASS=~/.claude/hooks/sudo_askpass.sh sudo -A` for priv
 - Remote name: `labonsky`
 - URL: https://github.com/labonsky/ryzenadj_AI300.git
 - Default branch: `master`
-- Current version: `v0.20.1`
+- Current version: `v0.20.2`

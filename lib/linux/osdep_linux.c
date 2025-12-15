@@ -23,7 +23,8 @@ static bool is_ryzen_smu_driver_compatible() {
 		return false;
 	}
 
-	if (major != 0 || minor != 1 || patch < 7) {
+	// Accept 0.1.7+ or 0.2.0+
+	if (major != 0 || (minor == 1 && patch < 7) || minor < 1) {
 		fclose(drv_ver);
 		return false;
 	}
