@@ -8,7 +8,7 @@ This solution provides:
 
 | Profile | STAPM | Fast | Slow | Screen |
 |---------|-------|------|------|--------|
-| Battery | 5W | 10W | 5W | 60Hz |
+| Battery | 3W | 5W | 3W | 60Hz |
 | AC | 53W | 53W | 35W | 120Hz |
 
 Power management is handled by **tuned** (see `tuned-profiles/`).
@@ -75,4 +75,4 @@ See `tuned-profiles/install.sh` for installation.
 
 ## Version
 
-Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.8.1+
+Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.9.2+

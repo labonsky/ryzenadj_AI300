@@ -22,9 +22,10 @@ This file provides context for Claude Code to quickly understand and work with t
 ├── show_stats.sh                      # Widget script (RAPL + battery + temp)
 ├── rpm/ryzenadj-ryzen_smu-ai300-krackan-PP.spec  # RPM spec
 ├── tuned-profiles/
-│   ├── ryzenadj-battery/script.sh     # 10W/5W, 60Hz
+│   ├── ryzenadj-battery/script.sh     # 3W/5W/3W, 60Hz
 │   ├── ryzenadj-ac/script.sh          # 53W/35W, 120Hz
 │   ├── ryzenadj-balanced/script.sh    # Same as battery
+│   ├── ryzen_smu.conf                 # Auto-load kernel module
 │   ├── 99-ryzenadj-power.rules        # udev auto-switching
 │   ├── 99-ryzenadj-rapl.rules         # RAPL permissions
 │   └── ryzenadj-boot-check.sh         # Boot-time profile detection
@@ -44,6 +45,7 @@ This file provides context for Claude Code to quickly understand and work with t
 /etc/tuned/profiles/ryzenadj-*/        # tuned profiles
 /usr/lib/udev/rules.d/99-ryzenadj-*.rules  # udev rules
 /usr/lib/systemd/system/ryzenadj-boot-check.service
+/usr/lib/modules-load.d/ryzen_smu.conf     # Auto-load kernel module
 /usr/share/ryzenadj/                   # Widget files
 ```
 
@@ -73,7 +75,7 @@ journalctl -u ryzenadj-boot-check.service
 
 ### Profile Switching
 ```bash
-sudo tuned-adm profile ryzenadj-battery  # 10W/5W, 60Hz
+sudo tuned-adm profile ryzenadj-battery  # 3W/5W/3W, 60Hz
 sudo tuned-adm profile ryzenadj-ac       # 53W/35W, 120Hz
 ```
 
@@ -154,8 +156,8 @@ sudo tuned-adm profile ryzenadj-ac       # 53W/35W, 120Hz
 
 | Profile | STAPM | Fast | Slow | Screen | Use Case |
 |---------|-------|------|------|--------|----------|
-| ryzenadj-battery | 5W | 10W | 5W | 60Hz | Battery life |
-| ryzenadj-balanced | 5W | 10W | 5W | 60Hz | Same as battery |
+| ryzenadj-battery | 3W | 5W | 3W | 60Hz | Battery life |
+| ryzenadj-balanced | 3W | 5W | 3W | 60Hz | Same as battery |
 | ryzenadj-ac | 53W | 53W | 35W | 120Hz | Full performance |
 
 ## Sudo Access
@@ -167,4 +169,4 @@ Claude Code uses `SUDO_ASKPASS=~/.claude/hooks/sudo_askpass.sh sudo -A` for priv
 - Remote name: `labonsky`
 - URL: https://github.com/labonsky/ryzenadj_AI300.git
 - Default branch: `master`
-- Current version: `v0.19.8.1`
+- Current version: `v0.19.9.2`

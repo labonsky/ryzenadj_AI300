@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.8.1
+Version:        0.19.9.2
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -27,7 +27,7 @@ Components:
 - KDE widget: Power monitoring (Laptop | CPU | Temp)
 
 Power Profiles:
-- ryzenadj-battery: 5W sustained, 10W burst, 60Hz screen
+- ryzenadj-battery: 3W sustained, 5W burst, 60Hz screen
 - ryzenadj-ac: 53W full power, 120Hz screen
 - Auto-switching via udev rules
 - KDE Power Profiles GUI integration
@@ -68,6 +68,9 @@ install -D -m 644 tuned-profiles/99-ryzenadj-rapl.rules %{buildroot}%{_udevrules
 # boot check service
 install -D -m 755 tuned-profiles/ryzenadj-boot-check.sh %{buildroot}%{_bindir}/ryzenadj-boot-check.sh
 install -D -m 644 tuned-profiles/ryzenadj-boot-check.service %{buildroot}%{_unitdir}/ryzenadj-boot-check.service
+
+# modules-load.d config for auto-loading ryzen_smu
+install -D -m 644 tuned-profiles/ryzen_smu.conf %{buildroot}%{_prefix}/lib/modules-load.d/ryzen_smu.conf
 
 # widget script
 install -D -m 755 show_stats.sh %{buildroot}%{_libexecdir}/ryzenadj/show_stats.sh
@@ -137,6 +140,9 @@ fi
 %{_bindir}/ryzenadj-boot-check.sh
 %{_unitdir}/ryzenadj-boot-check.service
 
+# modules-load.d
+%{_prefix}/lib/modules-load.d/ryzen_smu.conf
+
 # widget helpers
 %dir %{_libexecdir}/ryzenadj
 %{_libexecdir}/ryzenadj/show_stats.sh
@@ -147,6 +153,11 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Mon Dec 15 2025 labonsky - 0.19.9.2-1
+- Lower battery power limits: 3W/5W/3W (was 5W/10W/5W)
+- Auto-load ryzen_smu kernel module via modules-load.d
+- Update documentation consistency
+
 * Sun Dec 14 2025 labonsky - 0.19.8.1-1
 - Documentation cleanup: remove stale references
 - Fix ryzen_smu codename docs (Krackan Point = 27)

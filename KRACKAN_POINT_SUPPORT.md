@@ -52,7 +52,7 @@ Download from [GitHub Releases](https://github.com/labonsky/ryzenadj_AI300/relea
 
 ```bash
 # Install RPM
-sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.8.1-1.fc43.x86_64.rpm
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.9.2-1.fc43.x86_64.rpm
 
 # Install KDE widget
 /usr/share/ryzenadj/install-widget.sh
@@ -97,8 +97,8 @@ tuned-adm list | grep ryzenadj
 
 | Profile | Inherits | STAPM | Fast | Slow | Screen |
 |---------|----------|-------|------|------|--------|
-| `ryzenadj-battery` | powersave | 5W | 10W | 5W | 60Hz |
-| `ryzenadj-balanced` | powersave | 5W | 10W | 5W | 60Hz |
+| `ryzenadj-battery` | powersave | 3W | 5W | 3W | 60Hz |
+| `ryzenadj-balanced` | powersave | 3W | 5W | 3W | 60Hz |
 | `ryzenadj-ac` | throughput-performance | 53W | 53W | 35W | 120Hz |
 
 ### KDE Power Profiles Mapping
@@ -124,9 +124,9 @@ Fully automatic power management:
 | Event | Profile | Power Limits | Screen |
 |-------|---------|--------------|--------|
 | **Plug in AC** | ryzenadj-ac | 53W / 35W | 120Hz |
-| **Unplug** | ryzenadj-battery | 10W / 5W | 60Hz |
+| **Unplug** | ryzenadj-battery | 5W / 3W | 60Hz |
 | **Boot on AC** | ryzenadj-ac | 53W / 35W | 120Hz |
-| **Boot on battery** | ryzenadj-battery | 10W / 5W | 60Hz |
+| **Boot on battery** | ryzenadj-battery | 5W / 3W | 60Hz |
 
 How it works:
 - **udev rules:** Detect AC plug/unplug events and switch profiles

@@ -6,7 +6,7 @@ Adjust power management settings for Ryzen Mobile Processors.
 
 Based on: [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) v0.18.0
 
-**Current release: [v0.19.8.1](https://github.com/labonsky/ryzenadj_AI300/releases/tag/v0.19.8.1)** - RPM package available for Fedora.
+**Current release: [v0.19.9.2](https://github.com/labonsky/ryzenadj_AI300/releases/tag/v0.19.9.2)** - RPM package available for Fedora.
 
 ## Krackan Point Support
 
@@ -165,7 +165,7 @@ This fork includes tuned profiles that integrate with Fedora's power management,
 
 | Profile | Inherits | STAPM | Fast | Slow | Screen |
 |---------|----------|-------|------|------|--------|
-| `ryzenadj-battery` | powersave | 5W | 10W | 5W | 60Hz |
+| `ryzenadj-battery` | powersave | 3W | 5W | 3W | 60Hz |
 | `ryzenadj-ac` | throughput-performance | 53W | 53W | 35W | 120Hz |
 
 ### Power Limit Explanation
@@ -186,7 +186,7 @@ sudo mkdir -p /etc/tuned/profiles/ryzenadj-ac
 # Battery profile (inherits Fedora's powersave settings)
 sudo tee /etc/tuned/profiles/ryzenadj-battery/tuned.conf << 'EOF'
 [main]
-summary=Battery power saving with ryzenadj (5W sustain, 10W burst)
+summary=Battery power saving with ryzenadj (3W sustain, 5W burst)
 include=powersave
 
 [script]
@@ -197,7 +197,7 @@ sudo tee /etc/tuned/profiles/ryzenadj-battery/script.sh << 'EOF'
 #!/bin/bash
 case "$1" in
     start)
-        /usr/bin/ryzenadj --stapm-limit=5000 --fast-limit=10000 --slow-limit=5000 2>/dev/null
+        /usr/bin/ryzenadj --stapm-limit=3000 --fast-limit=5000 --slow-limit=3000 2>/dev/null
         # Screen refresh (optional) - adjust for your setup
         # kscreen-doctor output.eDP-1.mode.2 2>/dev/null
         ;;
