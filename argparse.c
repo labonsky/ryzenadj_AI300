@@ -98,11 +98,7 @@ argparse_getvalue(struct argparse *self, const struct argparse_option *opt,
 			argparse_error(self, opt, "requires a value", flags);
 		}
 		if (errno){
-			#ifdef _WIN32
-			strerror_s(buf, sizeof(buf), errno);
-			#else
 			strerror_r(errno, buf, sizeof(buf));
-			#endif
 			argparse_error(self, opt, pbuf, flags);
 		}
 		if (s[0] != '\0')
@@ -120,11 +116,7 @@ argparse_getvalue(struct argparse *self, const struct argparse_option *opt,
 			argparse_error(self, opt, "requires a value", flags);
 		}
 		if (errno){
-			#ifdef _WIN32
-			strerror_s(buf, sizeof(buf), errno);
-			#else
 			strerror_r(errno, buf, sizeof(buf));
-			#endif
 			argparse_error(self, opt, pbuf, flags);
 		}
 		if (s[0] != '\0')
@@ -142,11 +134,7 @@ argparse_getvalue(struct argparse *self, const struct argparse_option *opt,
 			argparse_error(self, opt, "requires a value", flags);
 		}
 		if (errno){
-			#ifdef _WIN32
-			strerror_s(buf, sizeof(buf), errno);
-			#else
 			strerror_r(errno, buf, sizeof(buf));
-			#endif
 			argparse_error(self, opt, pbuf, flags);
 		}
 		if (s[0] != '\0')
