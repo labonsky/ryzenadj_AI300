@@ -86,6 +86,9 @@ dkms add -m ryzen_smu -v 0.1.7 --rpm_safe_upgrade || :
 dkms build -m ryzen_smu -v 0.1.7 || :
 dkms install -m ryzen_smu -v 0.1.7 --force || :
 
+# Remove any existing blacklist for ryzen_smu
+rm -f /etc/modprobe.d/blacklist-ryzen_smu.conf 2>/dev/null || :
+
 # Load module
 modprobe ryzen_smu || :
 
@@ -156,6 +159,7 @@ fi
 * Mon Dec 15 2025 labonsky - 0.19.9.2-1
 - Lower battery power limits: 3W/5W/3W (was 5W/10W/5W)
 - Auto-load ryzen_smu kernel module via modules-load.d
+- Remove ryzen_smu blacklist if present during install
 - Update documentation consistency
 
 * Sun Dec 14 2025 labonsky - 0.19.8.1-1
