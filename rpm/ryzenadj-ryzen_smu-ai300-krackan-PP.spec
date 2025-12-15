@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.20.0
+Version:        0.20.1
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -156,6 +156,11 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Mon Dec 15 2025 labonsky - 0.20.1-1
+- Remove Windows code and CI (Linux-only fork)
+- Add AMD P-State EPP documentation
+- Shorten README, fix versioning
+
 * Mon Dec 15 2025 labonsky - 0.20.0-1
 - Major version bump for kernel 6.18 support
 - ryzenadj version 0.20.0

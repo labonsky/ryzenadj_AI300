@@ -2,7 +2,7 @@
 
 Power management for AMD Ryzen AI 300 series (Krackan Point) processors.
 
-**Current release: [v0.20.0](https://github.com/labonsky/ryzenadj_AI300/releases/tag/v0.20.0)** - RPM for Fedora (kernel 6.18+)
+**Current release: [v0.20.1](https://github.com/labonsky/ryzenadj_AI300/releases/tag/v0.20.1)** - RPM for Fedora (kernel 6.18+)
 
 Based on [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) v0.18.0 | [Upstream Wiki](https://github.com/FlyGoat/RyzenAdj/wiki)
 
@@ -27,7 +27,7 @@ Based on [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) v0.18.0 | [Upst
 
 ```bash
 # Install
-sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.20.0-1.fc43.x86_64.rpm
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.20.1-1.fc43.x86_64.rpm
 
 # Verify
 sudo ryzenadj -i
