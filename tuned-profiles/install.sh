@@ -49,7 +49,7 @@ echo "Available profiles:"
 tuned-adm list | grep ryzenadj
 echo ""
 echo "Usage:"
-echo "  sudo tuned-adm profile ryzenadj-battery  # Low power (5W)"
+echo "  sudo tuned-adm profile ryzenadj-battery  # Low power (3W)"
 echo "  sudo tuned-adm profile ryzenadj-ac       # Full power (53W)"
 echo ""
 echo "Auto-switching enabled via udev rules."
