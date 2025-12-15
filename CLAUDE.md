@@ -32,7 +32,7 @@ This file provides context for Claude Code to quickly understand and work with t
 ├── widget/
 │   ├── install-widget.sh
 │   └── com.github.zren.commandoutput/ # Pre-configured widget
-└── ryzen_smu/                         # Patched kernel module v0.1.7
+└── ryzen_smu/                         # Patched kernel module v0.2.0
 ```
 
 ### Installed Locations (RPM)
@@ -41,7 +41,7 @@ This file provides context for Claude Code to quickly understand and work with t
 /usr/bin/ryzenadj-boot-check.sh        # Boot script
 /usr/lib64/libryzenadj.so              # Library
 /usr/libexec/ryzenadj/show_stats.sh    # Widget script
-/usr/src/ryzen_smu-0.1.7/              # DKMS source
+/usr/src/ryzen_smu-0.2.0/              # DKMS source
 /etc/tuned/profiles/ryzenadj-*/        # tuned profiles
 /usr/lib/udev/rules.d/99-ryzenadj-*.rules  # udev rules
 /usr/lib/systemd/system/ryzenadj-boot-check.service
@@ -71,6 +71,11 @@ cat /sys/class/power_supply/ACAD/online  # 1=AC, 0=battery
 # Boot service
 systemctl status ryzenadj-boot-check.service
 journalctl -u ryzenadj-boot-check.service
+
+# AMD P-State EPP (kernel 6.3+)
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver        # amd-pstate-epp
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor      # powersave or performance
+cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference  # power or performance
 ```
 
 ### Profile Switching

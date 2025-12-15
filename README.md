@@ -279,6 +279,17 @@ The `ryzenadj-battery` profile inherits these additional power savings from Fedo
 | `radeon_powersave=dpm-battery` | GPU power saving |
 | `alpm=med_power_with_dipm` | SATA link power management |
 
+### AMD P-State EPP Integration
+
+On kernel 6.3+, the `amd-pstate-epp` driver handles CPU frequency scaling alongside ryzenadj power limits:
+
+| Layer | What It Controls |
+|-------|------------------|
+| **amd_pstate** | CPU frequency (MHz) via EPP hints |
+| **ryzenadj** | Power budget (Watts) via SMU |
+
+The tuned profiles coordinate both - no manual configuration needed. See [KRACKAN_POINT_SUPPORT.md](KRACKAN_POINT_SUPPORT.md#amd-p-state-epp-integration) for details.
+
 ---
 
 ## Standard Installation

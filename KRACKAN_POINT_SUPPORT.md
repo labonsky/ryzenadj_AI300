@@ -133,6 +133,33 @@ How it works:
 - **Boot service:** Systemd oneshot service checks AC state at boot
 - **Profile scripts:** Apply ryzenadj power limits + kscreen-doctor refresh rate
 
+### AMD P-State EPP Integration
+
+On kernel 6.3+ (default since 6.5), the `amd-pstate-epp` driver provides hardware-controlled CPU frequency scaling. This works alongside ryzenadj at different layers:
+
+| Layer | Control | What It Does |
+|-------|---------|--------------|
+| **amd_pstate** | CPU frequency | Scales between min/max MHz via EPP hints |
+| **ryzenadj** | Power budget | Sets STAPM/PPT watt limits via SMU |
+
+The tuned profiles coordinate both systems:
+
+| Profile | Governor | EPP | ryzenadj | Combined Effect |
+|---------|----------|-----|----------|-----------------|
+| `ryzenadj-battery` | powersave | power | 3W/5W/3W | Min frequency + min power |
+| `ryzenadj-ac` | performance | performance | 53W/53W/35W | Max frequency + full power |
+
+**No manual configuration needed** - the base profiles (`powersave`, `throughput-performance`) configure AMD P-State EPP automatically, while ryzenadj scripts add power budget limits on top.
+
+Verify with:
+```bash
+cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_driver
+# Should show: amd-pstate-epp
+
+cat /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
+# Shows: power (battery) or performance (AC)
+```
+
 ## File Structure
 
 ```
