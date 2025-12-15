@@ -6,7 +6,7 @@ Adjust power management settings for Ryzen Mobile Processors.
 
 Based on: [FlyGoat/RyzenAdj](https://github.com/FlyGoat/RyzenAdj) v0.18.0
 
-**Current release: [v0.19.9.2](https://github.com/labonsky/ryzenadj_AI300/releases/tag/v0.19.9.2)** - RPM package available for Fedora.
+**Current release: [v0.20.0](https://github.com/labonsky/ryzenadj_AI300/releases/tag/v0.20.0)** - RPM package available for Fedora (kernel 6.18+).
 
 ## Krackan Point Support
 

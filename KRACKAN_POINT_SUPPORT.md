@@ -37,7 +37,7 @@ case 0x650005: ry->table_size = 0xD80; break;  // Krackan Point
 
 ### ryzen_smu (ryzen_smu/)
 
-Patched v0.1.7 with Krackan Point support:
+Patched v0.2.0 with Krackan Point support:
 - `smu.h`: Added `CODENAME_KRACKANPOINT` enum
 - `smu.c`: CPU detection, mailbox config, PM table version/size
 - `lib/libsmu.h`, `lib/libsmu.c`: Userspace library patches
@@ -52,7 +52,7 @@ Download from [GitHub Releases](https://github.com/labonsky/ryzenadj_AI300/relea
 
 ```bash
 # Install RPM
-sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.19.9.2-1.fc43.x86_64.rpm
+sudo dnf install ryzenadj-ryzen_smu-ai300-krackan-PP-0.20.0-1.fc43.x86_64.rpm
 
 # Install KDE widget
 /usr/share/ryzenadj/install-widget.sh

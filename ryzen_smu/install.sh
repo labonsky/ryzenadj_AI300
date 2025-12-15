@@ -10,7 +10,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo -e "${GREEN}=== ryzen_smu Installation Script ===${NC}"
-echo "Version: 0.1.7 + Krackan Point support"
+echo "Version: 0.2.0 + Krackan Point support"
 echo ""
 
 # Check for root
@@ -29,7 +29,7 @@ done
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VERSION="0.1.7"
+VERSION="0.2.0"
 
 echo -e "${YELLOW}[1/6] Removing old ryzen_smu installations...${NC}"
 # Remove any existing DKMS modules

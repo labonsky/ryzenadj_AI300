@@ -1,5 +1,5 @@
 Name:           ryzenadj-ryzen_smu-ai300-krackan-PP
-Version:        0.19.9.2
+Version:        0.20.0
 Release:        1%{?dist}
 Summary:        AMD Ryzen AI 300 (Krackan Point) power management suite
 License:        LGPL-3.0 AND GPL-2.0
@@ -22,7 +22,7 @@ processors including Ryzen AI 5 340 and AI 7 350.
 
 Components:
 - ryzenadj: Command-line power adjustment tool (based on upstream v0.18.0)
-- ryzen_smu: Kernel module for SMU communication (v0.1.7, DKMS)
+- ryzen_smu: Kernel module for SMU communication (v0.2.0, DKMS)
 - Power Profiles: tuned integration with auto-switching
 - KDE widget: Power monitoring (Laptop | CPU | Temp)
 
@@ -47,11 +47,11 @@ install -D -m 755 build/ryzenadj %{buildroot}%{_bindir}/ryzenadj
 install -D -m 755 build/libryzenadj.so %{buildroot}%{_libdir}/libryzenadj.so
 
 # ryzen_smu DKMS source
-install -d %{buildroot}%{_usrsrc}/ryzen_smu-0.1.7
-cp -a ryzen_smu/Makefile %{buildroot}%{_usrsrc}/ryzen_smu-0.1.7/
-cp -a ryzen_smu/dkms.conf %{buildroot}%{_usrsrc}/ryzen_smu-0.1.7/
-cp -a ryzen_smu/*.c %{buildroot}%{_usrsrc}/ryzen_smu-0.1.7/
-cp -a ryzen_smu/*.h %{buildroot}%{_usrsrc}/ryzen_smu-0.1.7/
+install -d %{buildroot}%{_usrsrc}/ryzen_smu-0.2.0
+cp -a ryzen_smu/Makefile %{buildroot}%{_usrsrc}/ryzen_smu-0.2.0/
+cp -a ryzen_smu/dkms.conf %{buildroot}%{_usrsrc}/ryzen_smu-0.2.0/
+cp -a ryzen_smu/*.c %{buildroot}%{_usrsrc}/ryzen_smu-0.2.0/
+cp -a ryzen_smu/*.h %{buildroot}%{_usrsrc}/ryzen_smu-0.2.0/
 
 # tuned profiles
 install -d %{buildroot}%{_sysconfdir}/tuned/profiles/ryzenadj-battery
@@ -82,9 +82,9 @@ install -D -m 755 widget/install-widget.sh %{buildroot}%{_datadir}/ryzenadj/inst
 
 %post
 # Register DKMS module
-dkms add -m ryzen_smu -v 0.1.7 --rpm_safe_upgrade || :
-dkms build -m ryzen_smu -v 0.1.7 || :
-dkms install -m ryzen_smu -v 0.1.7 --force || :
+dkms add -m ryzen_smu -v 0.2.0 --rpm_safe_upgrade || :
+dkms build -m ryzen_smu -v 0.2.0 || :
+dkms install -m ryzen_smu -v 0.2.0 --force || :
 
 # Remove any existing blacklist for ryzen_smu
 rm -f /etc/modprobe.d/blacklist-ryzen_smu.conf 2>/dev/null || :
@@ -118,7 +118,7 @@ if [ $1 -eq 0 ]; then
     # Uninstall
     systemctl disable ryzenadj-boot-check.service || :
     modprobe -r ryzen_smu || :
-    dkms remove -m ryzen_smu -v 0.1.7 --all --rpm_safe_upgrade || :
+    dkms remove -m ryzen_smu -v 0.2.0 --all --rpm_safe_upgrade || :
 fi
 
 %files
@@ -130,7 +130,7 @@ fi
 %{_libdir}/libryzenadj.so
 
 # ryzen_smu DKMS
-%{_usrsrc}/ryzen_smu-0.1.7/
+%{_usrsrc}/ryzen_smu-0.2.0/
 
 # tuned profiles
 %config(noreplace) %{_sysconfdir}/tuned/profiles/ryzenadj-battery/
@@ -156,6 +156,12 @@ fi
 %{_datadir}/ryzenadj/widget/
 
 %changelog
+* Mon Dec 15 2025 labonsky - 0.20.0-1
+- Major version bump for kernel 6.18 support
+- ryzenadj version 0.20.0
+- ryzen_smu version 0.2.0
+- Branch restructure: master for 6.18, 6.17 branch for legacy
+
 * Mon Dec 15 2025 labonsky - 0.19.9.2-1
 - Lower battery power limits: 3W/5W/3W (was 5W/10W/5W)
 - Auto-load ryzen_smu kernel module via modules-load.d

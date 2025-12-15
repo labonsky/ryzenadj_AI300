@@ -75,4 +75,4 @@ See `tuned-profiles/install.sh` for installation.
 
 ## Version
 
-Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.19.9.2+
+Widget included in `ryzenadj-ryzen_smu-ai300-krackan-PP` RPM v0.20.0+
